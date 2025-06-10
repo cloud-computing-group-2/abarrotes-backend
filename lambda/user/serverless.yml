@@ -28,7 +28,7 @@ functions:
           cors: true
           integration: lambda
   validar:
-    handler: UserValidate.lambda_handler
+    handler: UserValidar.lambda_handler
     events:
       - http:
           path: /usuarios/validar
