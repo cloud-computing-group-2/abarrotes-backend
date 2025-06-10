@@ -21,8 +21,8 @@ def lambda_handler(event, context):
     table = dynamodb.Table('ab_usuarios')
     response = table.get_item(
         Key={
-            'user_id': user_id,
-            'tenant_id': tenant_id
+            'tenant_id': tenant_id,
+            'user_id': user_id
         }
     )
     if 'Item' not in response:

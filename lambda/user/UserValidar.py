@@ -10,7 +10,8 @@ def lambda_handler(event, context):
     table = dynamodb.Table('t_tokens_acceso')
     response = table.get_item(
         Key={
-            'token': token
+            'token': token,
+            "tenant_id": tenant_id
         }
     )
     if 'Item' not in response or response['Item'].get('tenant_id') != tenant_id:

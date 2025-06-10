@@ -13,14 +13,19 @@ def lambda_handler(event, context):
         # Obtener el email y el password
         user_id = event.get('user_id')
         tenant_id = event.get('tenant_id')
+        if not user_id or not tenant_id:
+            return {
+                "statusCode": 400,
+                "body": "User id or tenant_id invalid"
+            }
 
         dynamodb = boto3.resource('dynamodb')
         ab_usuarios = dynamodb.Table('ab_usuarios')
 
         check = ab_usuarios.get_item(
             Key={
-                'user_id': user_id,
-                'tenant_id': tenant_id
+                'tenant_id': tenant_id,
+                'user_id': user_id
             }
         )
 
