@@ -4,6 +4,7 @@ from datetime import datetime
 def lambda_handler(event, context):
     # Entrada (json)
     token = event['token']
+    tenant_id = event['tenant_id']
     # Proceso
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('t_tokens_acceso')
@@ -12,7 +13,7 @@ def lambda_handler(event, context):
             'token': token
         }
     )
-    if 'Item' not in response:
+    if 'Item' not in response or response['Item'].get('tenant_id') != tenant_id:
         return {
             'statusCode': 403,
             'body': 'Token no existe'

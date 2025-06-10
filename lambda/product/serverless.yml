@@ -1,38 +1,19 @@
 org: salvadordonayre
-service: abarrotes-usuarios
+service: abarrotes-productos
 
 provider:
   name: aws
-  runtime: python3.12
+  runtime: nodejs20.x
   timeout: 30
   iam:
     role: arn:aws:iam::107956752347:role/LabRole
 
 functions:
-  registrar:
-    handler: UserCreate.lambda_handler
+  crear:
+    handler: ProductCreate.handler
     events:
       - http:
-          path: /usuarios/registrar
+          path: /productos/crear
           method: post
           cors: true
           integration: lambda
-  validar:
-    handler: UserValidate.lambda_handler
-    events:
-      - http:
-          path: /usuarios/validar
-          method: post
-          cors: true
-          integration: lambda
-  login:
-    handler: UserLogin.lambda_handler
-    events:
-      - http:
-          path: /usuarios/login
-          method: post
-          cors: true
-          integration: lambda
-
-
-

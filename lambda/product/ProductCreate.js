@@ -1,0 +1,34 @@
+import AWS from 'aws-sdk';
+import { v4 as uuidv4 } from 'uuid';
+import { validateToken } from './auth.js';
+
+const dynamo = new AWS.DynamoDB.DocumentClient();
+const tableName = 'ab_productos';
+
+export const handler = async (event) => {
+  try {
+    const { token, tenant_id, nombre, precio, stock } = JSON.parse(event.body);
+    await validateToken(token, tenant_id);
+
+    const producto_id = uuidv4();
+    const item = {
+      producto_id,
+      tenant_id,
+      nombre,
+      precio,
+      stock
+    };
+
+    await dynamo.put({ TableName: tableName, Item: item }).promise();
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: 'Producto creado', producto_id })
+    };
+  } catch (err) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: err.message })
+    };
+  }
+};

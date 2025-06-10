@@ -1,0 +1,57 @@
+import boto3
+import hashlib
+import bcrypt
+import uuid  # Genera valores únicos
+from datetime import datetime, timedelta
+
+# Expire time
+expire_time = timedelta(hours=1)
+
+# Hashear contraseña
+def verify_password(password, hashed):
+    return bcrypt.checkpw(password.encode(), hashed.encode())
+
+def lambda_handler(event, context):
+    # Entrada (json)
+    user_id = event['user_id']
+    tenant_id = event['tenant_id']
+    password = event['password']
+    # Proceso
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table('ab_usuarios')
+    response = table.get_item(
+        Key={
+            'user_id': user_id,
+            'tenant_id': tenant_id
+        }
+    )
+    if 'Item' not in response:
+        return {
+            'statusCode': 403,
+            'body': 'Usuario no existe'
+        }
+    else:
+        hashed_password_bd = response['Item']['password']
+        if verify_password(password, hashed_password_bd):
+            # Genera token
+            token = str(uuid.uuid4())
+            fecha_hora_exp = datetime.now() + expire_time
+            item_token = {
+                'token': token,
+                'user_id': user_id,
+                "tenant_id": tenant_id,
+                'expires': fecha_hora_exp.strftime('%Y-%m-%d %H:%M:%S')
+            }
+            table = dynamodb.Table('t_tokens_acceso')
+            dynamodbResponse = table.put_item(Item=item_token)
+        else:
+            return {
+                'statusCode': 403,
+                'body': 'Password incorrecto'
+            }
+
+    # Salida (json)
+    return {
+        'statusCode': 200,
+        'token': token
+    }
