@@ -46,7 +46,7 @@ def lambda_handler(event, context):
                 "tenant_id": tenant_id,
                 'expires': fecha_hora_exp.strftime('%Y-%m-%d %H:%M:%S')
             }
-            table = dynamodb.Table('t_tokens_acceso')
+            table = dynamodb.Table('ab_tokens_acceso')
             dynamodbResponse = table.put_item(Item=item_token)
         else:
             return {

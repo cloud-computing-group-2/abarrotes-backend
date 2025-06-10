@@ -9,7 +9,7 @@ def lambda_handler(event, context):
     tenant_id = body.get('tenant_id')
 
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('t_tokens_acceso')
+    table = dynamodb.Table('ab_tokens_acceso')
     response = table.get_item(
         Key={
             'token': token,
