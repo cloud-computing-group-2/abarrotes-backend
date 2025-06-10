@@ -1,12 +1,22 @@
 org: salvadordonayre
 service: abarrotes-usuarios
 
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    layer: false
+
 provider:
   name: aws
   runtime: python3.12
   timeout: 30
+  region: us-east-1
   iam:
     role: arn:aws:iam::107956752347:role/LabRole
+
 
 functions:
   registrar:
