@@ -1,5 +1,6 @@
 import boto3
 import bcrypt
+import json
 
 # Hashear contraseña
 def hash_password(password):
@@ -15,8 +16,8 @@ def lambda_handler(event, context):
         body = json.loads(event['body'])
         print("parsed body:", body)
         
-        user_id = event['user_id']
-        tenant_id = event['tenant_id']
+        user_id = body.get('user_id')
+        tenant_id = body.get('tenant_id')
         if not user_id or not tenant_id:
             return {
                 "statusCode": 400,
@@ -42,7 +43,7 @@ def lambda_handler(event, context):
                 'body': mensaje
             }
 
-        password = event['password']
+        password = body.get('password')
 
         # Verificar que el email y el password existen
         if user_id and password and tenant_id:
