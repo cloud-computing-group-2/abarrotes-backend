@@ -11,12 +11,12 @@ def hash_password(password):
 def lambda_handler(event, context):
     try:
         # Obtener el email y el password
-        user_id = event.get('user_id')
-        tenant_id = event.get('tenant_id')
+        user_id = event['user_id']
+        tenant_id = event['tenant_id']
         if not user_id or not tenant_id:
             return {
                 "statusCode": 400,
-                "body": "User id or tenant_id invalid"
+                "body": "user_id or tenant_id invalid"
             }
 
         dynamodb = boto3.resource('dynamodb')
@@ -38,7 +38,7 @@ def lambda_handler(event, context):
                 'body': mensaje
             }
 
-        password = event.get('password')
+        password = event['password']
 
         # Verificar que el email y el password existen
         if user_id and password and tenant_id:
