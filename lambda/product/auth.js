@@ -1,7 +1,7 @@
-import AWS from 'aws-sdk';
+const AWS = require('aws-sdk');
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
-export async function validateToken(token, tenant_id) {
+async function validateToken(token, tenant_id) {
   const res = await dynamo.get({
     TableName: 'ab_tokens_acceso',
     Key: { token, tenant_id }
@@ -11,3 +11,7 @@ export async function validateToken(token, tenant_id) {
     throw new Error('Token inválido o expirado');
   }
 }
+
+module.exports = {
+  validateToken
+};
