@@ -1,0 +1,38 @@
+org: salvadordonayre
+service: abarrotes-usuarios
+
+provider:
+  name: aws
+  runtime: python3.12
+  timeout: 30
+  iam:
+    role: arn:aws:iam::107956752347:role/LabRole
+
+functions:
+  registrar:
+    handler: UserCreate.lambda_handler
+    events:
+      - http:
+          path: /usuarios/registrar
+          method: post
+          cors: true
+          integration: lambda
+  validar:
+    handler: UserValidate.lambda_handler
+    events:
+      - http:
+          path: /usuarios/validar
+          method: post
+          cors: true
+          integration: lambda
+  login:
+    handler: UserLogin.lambda_handler
+    events:
+      - http:
+          path: /usuarios/login
+          method: post
+          cors: true
+          integration: lambda
+
+
+
