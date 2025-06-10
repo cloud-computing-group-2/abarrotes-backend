@@ -7,13 +7,18 @@ def hash_password(password):
     # Retorna la contraseña hasheada
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode('utf-8')
 
+def load_body(event):
+    if isinstance(event["body"], dict):
+        return json.loads(event['body'])
+    else:
+        return event["body"]
 
 # Función que maneja el registro de user y validación del password
 def lambda_handler(event, context):
     try:
         print("raw event:", event)
 
-        body = json.loads(event['body'])
+        body = load_body(event)
         print("parsed body:", body)
         
         user_id = body.get('user_id')
