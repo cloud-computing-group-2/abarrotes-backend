@@ -1,6 +1,6 @@
-import AWS from 'aws-sdk';
-import { v4 as uuidv4 } from 'uuid';
-import { validateToken } from './auth.js';
+const AWS = require('aws-sdk');
+const { v4: uuidv4 } = require('uuid');
+const { validateToken } = require('./auth.js');
 
 const dynamo = new AWS.DynamoDB.DocumentClient();
 const tableName = 'ab_productos';
