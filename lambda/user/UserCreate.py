@@ -9,9 +9,9 @@ def hash_password(password):
 
 def load_body(event):
     if isinstance(event["body"], dict):
-        return json.loads(event['body'])
+        return event['body']
     else:
-        return event["body"]
+        return json.loads(event['body'])
 
 # Función que maneja el registro de user y validación del password
 def lambda_handler(event, context):
