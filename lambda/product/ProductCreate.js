@@ -5,7 +5,7 @@ const { validateToken } = require('./auth.js');
 const dynamo = new AWS.DynamoDB.DocumentClient();
 const tableName = 'ab_productos';
 
-export const handler = async (event) => {
+exports.handler = async (event) => {
   try {
     const { token, tenant_id, nombre, precio, stock } = JSON.parse(event.body);
     await validateToken(token, tenant_id);
