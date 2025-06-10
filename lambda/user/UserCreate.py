@@ -10,11 +10,7 @@ def hash_password(password):
 # Función que maneja el registro de user y validación del password
 def lambda_handler(event, context):
     try:
-        if isinstance(event['body'], str):
-            body = json.loads(event['body'])
-        else:
-            body = event['body']
-
+        print("body:", body)
         # Obtener el email y el password
         user_id = event['user_id']
         tenant_id = event['tenant_id']
@@ -78,7 +74,7 @@ def lambda_handler(event, context):
 
     except Exception as e:
         # Excepción y retornar un código de error HTTP 500
-        print("Exception:", str(e))
+        print("Exception:", e)
         mensaje = {
             'error': str(e)
         }
