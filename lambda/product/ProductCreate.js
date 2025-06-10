@@ -7,7 +7,8 @@ const tableName = 'ab_productos';
 
 exports.handler = async (event) => {
   try {
-    const { token, tenant_id, nombre, precio, stock } = JSON.parse(event.body);
+    body = typeof event.body === 'string' ? JSON.parse(event.body) : event.body
+    const { token, tenant_id, nombre, precio, stock } = body;
     await validateToken(token, tenant_id);
 
     const producto_id = uuidv4();
