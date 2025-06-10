@@ -1,25 +1,18 @@
 import boto3
 import bcrypt
 import json
+from Utils import load_body
 
 # Hashear contraseña
 def hash_password(password):
     # Retorna la contraseña hasheada
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode('utf-8')
 
-def load_body(event):
-    if isinstance(event["body"], dict):
-        return event['body']
-    else:
-        return json.loads(event['body'])
 
 # Función que maneja el registro de user y validación del password
 def lambda_handler(event, context):
     try:
-        print("raw event:", event)
-
         body = load_body(event)
-        print("parsed body:", body)
         
         user_id = body.get('user_id')
         tenant_id = body.get('tenant_id')

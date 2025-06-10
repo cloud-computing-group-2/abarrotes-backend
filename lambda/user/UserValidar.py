@@ -1,11 +1,13 @@
 import boto3
+from Utils import load_body
 from datetime import datetime
 
 def lambda_handler(event, context):
-    # Entrada (json)
-    token = event['token']
-    tenant_id = event['tenant_id']
-    # Proceso
+    body = load_body(event)
+
+    token = body.get('token')
+    tenant_id = body.get('tenant_id')
+
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('t_tokens_acceso')
     response = table.get_item(
@@ -28,7 +30,7 @@ def lambda_handler(event, context):
                 'body': 'Token expirado'
             }
 
-    # Salida (json)
+
     return {
         'statusCode': 200,
         'body': 'Token válido'

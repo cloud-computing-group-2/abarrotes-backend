@@ -2,6 +2,7 @@ import boto3
 import hashlib
 import bcrypt
 import uuid  # Genera valores únicos
+from Utils import load_body
 from datetime import datetime, timedelta
 
 # Expire time
@@ -11,12 +12,15 @@ expire_time = timedelta(hours=1)
 def verify_password(password, hashed):
     return bcrypt.checkpw(password.encode(), hashed.encode())
 
+
+
 def lambda_handler(event, context):
-    # Entrada (json)
-    user_id = event['user_id']
-    tenant_id = event['tenant_id']
-    password = event['password']
-    # Proceso
+    body = load_body(event)
+
+    user_id = body.get('user_id')
+    tenant_id = body.get('tenant_id')
+    password = body.get('password')
+
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('ab_usuarios')
     response = table.get_item(
@@ -50,7 +54,7 @@ def lambda_handler(event, context):
                 'body': 'Password incorrecto'
             }
 
-    # Salida (json)
+
     return {
         'statusCode': 200,
         'token': token
