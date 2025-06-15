@@ -99,7 +99,7 @@ def lambda_handler(event, context):
             'product_id': product_id, 
             'nombre': nombre,
             'amount': amount,          
-            'precio': Decimal(str(precio * amount))  # precio del prod * cantidad
+            'price': Decimal(str(precio * amount))  # precio del prod * cantidad
         }
 
     if 'Item' in response: # existe
