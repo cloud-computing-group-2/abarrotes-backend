@@ -47,8 +47,8 @@ def lambda_handler(event, context):
 
     info_prod = producto.get_item(
         Key={
-            'product_id': product_id,
-            'tenant_id': tenant_id
+            'tenant_id': tenant_id,
+            'producto_id': product_id 
         }
     )
 
