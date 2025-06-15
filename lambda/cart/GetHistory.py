@@ -2,10 +2,21 @@ import boto3
 import json
 import os
 from datetime import datetime
+from decimal import Decimal
 
 stage = os.environ.get('stage')
 table_historial = os.environ.get('TABLE_CART', 'dev-t-carrito')+"-history"
 user_validar = f"abarrotes-usuarios-{stage}-validar"
+
+def decimal_to_float(obj):
+    if isinstance(obj, Decimal):
+        return float(obj)
+    elif isinstance(obj, dict):
+        return {key: decimal_to_float(value) for key, value in obj.items()}
+    elif isinstance(obj, list):
+        return [decimal_to_float(item) for item in obj]
+    else:
+        return obj
 
 def lambda_handler(event, context):
 
@@ -60,7 +71,8 @@ def lambda_handler(event, context):
 
         items = response.get('Items', [])
         last_evaluated_key = response.get('LastEvaluatedKey', None)
-
+        items = decimal_to_float(items)
+        
         return {
             'statusCode': 200,
             'body': json.dumps({
