@@ -5,7 +5,7 @@ from datetime import datetime
 
 stage = os.environ.get('stage')
 table_cart = os.environ.get('TABLE_CART', 'dev-t-carrito')
-table_historial = os.environ.get('TABLE_CART', 'dev-t-carrito')+"-historial"
+table_historial = os.environ.get('TABLE_CART', 'dev-t-carrito')+"-history"
 user_validar = f"abarrotes-usuarios-{stage}-validar"
 table_products = "ab_productos"
 
