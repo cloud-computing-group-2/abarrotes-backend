@@ -2,8 +2,6 @@ import boto3
 import json
 from boto3.dynamodb.conditions import Key 
 from decimal import Decimal
-import uuid
-from datetime import datetime
 
 table_cart = "ab_carrito"
 table_products = "ab_productos"

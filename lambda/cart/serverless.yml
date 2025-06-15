@@ -43,6 +43,14 @@ functions:
           method: delete
           cors: true
           integration: lambda-proxy 
+  listar:
+    handler: GetCart.lambda_handler
+    events:
+      - http:
+          path: /cart
+          method: get
+          cors: true
+          integration: lambda-proxy 
 
 
 
