@@ -52,6 +52,9 @@ def lambda_handler(event, context):
         }
     )
 
+    print("Información del producto:")
+    print(info_prod)
+
     info = info_prod['Item']
     nombre = info['nombre']
     precio = info['precio']
