@@ -43,7 +43,6 @@ def lambda_handler(event, context):
 
     user_id = body["user_id"]
     product_id = body["product_id"]
-    amount = body["amount"]
 
     # encontrando la información del producto
     

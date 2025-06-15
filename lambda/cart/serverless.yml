@@ -40,7 +40,7 @@ functions:
     events:
       - http:
           path: /cart/delete
-          method: put
+          method: delete
           cors: true
           integration: lambda-proxy 
 
