@@ -75,6 +75,7 @@ def lambda_handler(event, context):
     # buscando el producto en el carrito
 
     products = response['Item']['products']
+    curr_total_price = response['Item']['total_price']
 
     # Buscar el producto en la lista de productos
     product_found = False
@@ -98,6 +99,8 @@ def lambda_handler(event, context):
             product_found = True
             break
 
+    new_price = curr_total_price - (curr_amount * precio) + (amount * precio)
+    
     if product_found:
         update_response = carrito.update_item(
             Key={
@@ -107,6 +110,18 @@ def lambda_handler(event, context):
             UpdateExpression="SET products = :new_products",  # se actualiza toda la lista de productos
             ExpressionAttributeValues={
                 ':new_products': products 
+            },
+            ReturnValues="UPDATED_NEW"  
+        )
+
+        update_response = carrito.update_item(
+            Key={
+                'tenant_id': tenant_id,
+                'user_id': user_id
+            },
+            UpdateExpression="SET total_price = :new_price",  # se actualiza toda la lista de productos
+            ExpressionAttributeValues={
+                ':new_price': new_price
             },
             ReturnValues="UPDATED_NEW"  
         )
