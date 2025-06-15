@@ -3,6 +3,7 @@ import json
 from boto3.dynamodb.conditions import Key 
 
 table_name = "ab_carrito"
+user_validar = "abarrotes-usuarios-dev-validar"
 
 def lambda_handler(event, context):
 
@@ -19,7 +20,7 @@ def lambda_handler(event, context):
         "token": token,
         "tenant_id": tenant_id 
     })
-    invoke_response = lambda_client.invoke(FunctionName="UserValidar",
+    invoke_response = lambda_client.invoke(FunctionName=user_validar,
                                            InvocationType='RequestResponse',
                                            Payload = payload_string)
     response = json.loads(invoke_response['Payload'].read())
