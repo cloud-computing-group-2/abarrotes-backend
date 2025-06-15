@@ -52,6 +52,16 @@ def lambda_handler(event, context):
 
     products = response['Item'].get('products', [])
     total_price = response['Item'].get('total_price', Decimal('0.0'))
+
+    def decimal_to_float_or_str(obj):
+        if isinstance(obj, Decimal):
+            return float(obj) 
+        elif isinstance(obj, list):
+            return [decimal_to_float_or_str(item) for item in obj] 
+        elif isinstance(obj, dict):
+            return {key: decimal_to_float_or_str(value) for key, value in obj.items()}  
+        return obj  
+    products = decimal_to_float_or_str(products)
     
     return {
         'statusCode': 200,
