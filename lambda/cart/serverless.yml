@@ -50,6 +50,14 @@ functions:
           path: /cart
           method: get
           cors: true
+          integration: lambda-proxy
+  confirm:
+    handler: CompletePurchase.lambda_handler
+    events:
+      - http:
+          path: /cart/complete
+          method: post
+          cors: true
           integration: lambda-proxy 
 
 
