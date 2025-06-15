@@ -1,0 +1,34 @@
+const AWS = require('aws-sdk');
+const { v4: uuidv4 } = require('uuid');
+const { validateToken } = require('./auth.js');
+
+const dynamo = new AWS.DynamoDB.DocumentClient();
+const tableName = 'ab_productos';
+
+exports.handler = async (event) => {
+  try {
+    body = typeof event.body === 'string' ? JSON.parse(event.body) : event.body
+    const { token, tenant_id, producto_id } = body;
+    await validateToken(token, tenant_id);
+
+    const params = {
+        TableName: tableName,
+        Key: {
+          tenant_id: 'utec',
+          producto_id: '12345'
+        }
+      };
+
+    await dynamo.delete(params).promise();
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: 'Producto creado', producto_id })
+    };
+  } catch (err) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: err.message })
+    };
+  }
+};
