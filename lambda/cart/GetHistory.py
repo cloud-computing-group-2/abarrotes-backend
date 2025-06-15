@@ -14,8 +14,7 @@ def lambda_handler(event, context):
     query_params = event.get('queryStringParameters', {})
     user_id = query_params.get('user_id')
     tenant_id = query_params.get('tenant_id')
-    page = query_params.get('page', 1)
-    limit = query_params.get('limit', 10)
+    limit = int(query_params.get('limit', 10))
     
     # Inicio - Proteger el Lambda
     token = event['headers']['Authorization']
@@ -46,19 +45,32 @@ def lambda_handler(event, context):
         'Limit': limit
     }
 
-    if page:
-        params['ExclusiveStartKey'] = json.loads(page) if page != "1" else None 
-   
-    response = historial.scan(**params)
+    last_evaluated_key = query_params.get('last_evaluated_key')
+    if last_evaluated_key:
+        try:
+            params['ExclusiveStartKey'] = json.loads(last_evaluated_key)
+        except json.JSONDecodeError:
+            return {
+                'statusCode': 400,
+                'body': json.dumps({'message': 'last_evaluated_key no es válido'})
+            }
 
-    items = response.get('Items', [])
-    last_evaluated_key = response.get('LastEvaluatedKey', None)
+    try:
+        response = historial.scan(**params)
 
-    return {
-        'statusCode': 200,
-        'body': json.dumps({
-            'items': items,  
-            'last_evaluated_key': last_evaluated_key 
-        })
-    }
+        items = response.get('Items', [])
+        last_evaluated_key = response.get('LastEvaluatedKey', None)
 
+        return {
+            'statusCode': 200,
+            'body': json.dumps({
+                'items': items,  # Elementos obtenidos
+                'last_evaluated_key': last_evaluated_key  # Clave para la siguiente página de resultados
+            })
+        }
+
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'body': json.dumps({'message': f'Error al acceder a DynamoDB: {str(e)}'})
+        }
