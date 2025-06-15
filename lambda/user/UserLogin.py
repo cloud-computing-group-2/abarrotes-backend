@@ -6,7 +6,7 @@ from Utils import load_body
 from datetime import datetime, timedelta
 
 # Expire time
-expire_time = timedelta(hours=1)
+expire_time = timedelta(hours=5)
 
 # Hashear contraseña
 def verify_password(password, hashed):

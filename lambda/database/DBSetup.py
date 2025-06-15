@@ -102,7 +102,7 @@ def lambda_handler(event, context):
             ]
         )
         dynamodb.create_table(
-            TableName=shopping_2,
+            TableName=shopping_1,
             AttributeDefinitions=[
                 {
                     'AttributeName': 'tenant_id',
@@ -119,7 +119,7 @@ def lambda_handler(event, context):
                     'KeyType': 'HASH'
                 },
                 {
-                    'AttributeName': 'compra_id',
+                    'AttributeName': 'user_id',
                     'KeyType': 'RANGE'
                 }
             ],
@@ -132,14 +132,14 @@ def lambda_handler(event, context):
             ]
         )
         dynamodb.create_table(
-            TableName=shopping_1,
+            TableName=shopping_2,
             AttributeDefinitions=[
                 {
                     'AttributeName': 'tenant_id',
                     'AttributeType': 'S'
                 },
                 {
-                    'AttributeName': 'user_id',
+                    'AttributeName': 'compra_id',
                     'AttributeType': 'S'
                 }
             ],
