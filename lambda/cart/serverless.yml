@@ -18,7 +18,9 @@ provider:
   iam:
     role: arn:aws:iam::107956752347:role/LabRole
   environment:
+    stage: ${self:provider.stage}
     TABLE_NAME: ${self:provider.stage}-t-carrito
+
 
 functions:
   anadir:

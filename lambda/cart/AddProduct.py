@@ -7,7 +7,9 @@ from datetime import datetime
 
 stage = os.environ.get('stage')
 table_cart = os.environ.get('TABLE_CART', 'dev-t-carrito')
+print(f"Stage: {stage}")
 user_validar = f"abarrotes-usuarios-{stage}-validar"
+print(f"User validation function: {user_validar}")
 table_products = "ab_productos"
 
 def lambda_handler(event, context):
