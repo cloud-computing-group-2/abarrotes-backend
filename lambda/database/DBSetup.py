@@ -4,7 +4,8 @@ import json
 users = 'ab_usuarios'
 tokens = 'ab_tokens_acceso'
 products = "ab_productos"
-shopping = "ab_compras"
+shopping_1 = "ab_carrito"
+shopping_2 = "ab_historial"
 
 def lambda_handler(event, context):
     dynamodb = boto3.client('dynamodb')
@@ -71,36 +72,6 @@ def lambda_handler(event, context):
             ]
         )
         dynamodb.create_table(
-            TableName=shopping,
-            AttributeDefinitions=[
-                {
-                    'AttributeName': 'compra_id',
-                    'AttributeType': 'S'
-                },
-                {
-                    'AttributeName': 'tenant_id',
-                    'AttributeType': 'S'
-                }
-            ],
-            KeySchema=[
-                {
-                    'AttributeName': 'tenant_id',
-                    'KeyType': 'HASH'
-                },
-                {
-                    'AttributeName': 'compra_id',
-                    'KeyType': 'RANGE'
-                }
-            ],
-            BillingMode='PAY_PER_REQUEST',
-            Tags=[
-                {
-                    'Key': 'Environment',
-                    'Value': 'Dev'
-                }
-            ]
-        )
-        dynamodb.create_table(
             TableName=tokens,
             AttributeDefinitions=[
                 {
@@ -130,7 +101,66 @@ def lambda_handler(event, context):
                 }
             ]
         )
-
+        dynamodb.create_table(
+            TableName=shopping_2,
+            AttributeDefinitions=[
+                {
+                    'AttributeName': 'tenant_id',
+                    'AttributeType': 'S'
+                },
+                {
+                    'AttributeName': 'user_id',
+                    'AttributeType': 'S'
+                }
+            ],
+            KeySchema=[
+                {
+                    'AttributeName': 'tenant_id',
+                    'KeyType': 'HASH'
+                },
+                {
+                    'AttributeName': 'compra_id',
+                    'KeyType': 'RANGE'
+                }
+            ],
+            BillingMode='PAY_PER_REQUEST',
+            Tags=[
+                {
+                    'Key': 'Environment',
+                    'Value': 'Dev'
+                }
+            ]
+        )
+        dynamodb.create_table(
+            TableName=shopping_1,
+            AttributeDefinitions=[
+                {
+                    'AttributeName': 'tenant_id',
+                    'AttributeType': 'S'
+                },
+                {
+                    'AttributeName': 'user_id',
+                    'AttributeType': 'S'
+                }
+            ],
+            KeySchema=[
+                {
+                    'AttributeName': 'tenant_id',
+                    'KeyType': 'HASH'
+                },
+                {
+                    'AttributeName': 'compra_id',
+                    'KeyType': 'RANGE'
+                }
+            ],
+            BillingMode='PAY_PER_REQUEST',
+            Tags=[
+                {
+                    'Key': 'Environment',
+                    'Value': 'Dev'
+                }
+            ]
+        )
         return {
             'statusCode': 200,
             'body': json.dumps(f'Tablas creadas exitosamente.')
