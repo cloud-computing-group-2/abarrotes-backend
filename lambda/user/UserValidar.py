@@ -3,6 +3,9 @@ from Utils import load_body
 from datetime import datetime
 
 def lambda_handler(event, context):
+
+    print(event)
+
     body = load_body(event)
 
     token = body.get('token')
