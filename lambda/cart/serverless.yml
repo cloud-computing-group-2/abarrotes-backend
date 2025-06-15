@@ -19,13 +19,23 @@ provider:
 
 
 functions:
-  registrar:
+  anadir:
     handler: AddProduct.lambda_handler
     events:
       - http:
           path: /cart/add
           method: post
           cors: true
+          integration: lambda-proxy
+  actualizar:
+    handler: UpdateProduct.lambda_handler
+    events:
+      - http:
+          path: /cart/update
+          method: put
+          cors: true
           integration: lambda-proxy 
+
+
 
 

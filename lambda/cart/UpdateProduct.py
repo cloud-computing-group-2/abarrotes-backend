@@ -1,0 +1,138 @@
+import boto3 
+import json
+from boto3.dynamodb.conditions import Key 
+from decimal import Decimal
+import uuid
+from datetime import datetime
+
+table_cart = "ab_carrito"
+table_products = "ab_productos"
+user_validar = "abarrotes-usuarios-dev-validar"
+
+def lambda_handler(event, context):
+
+    print(event)
+    # Entrada (json)
+    body =  json.loads(event['body'])
+    
+    # Inicio - Proteger el Lambda
+    token = event['headers']['Authorization']
+    tenant_id = body['tenant_id']
+
+    lambda_client = boto3.client('lambda')    
+    payload = {
+    "token": token,
+    "tenant_id": tenant_id
+    }
+    invoke_response = lambda_client.invoke(FunctionName=user_validar,
+                                           InvocationType='RequestResponse',
+                                           Payload = json.dumps(payload))
+    response = json.loads(invoke_response['Payload'].read())
+    print(response)
+    if response['statusCode'] == 403:
+        return {
+            'statusCode' : 403,
+            'status' : 'Forbidden - Acceso No Autorizado'
+        }
+
+
+    # Acceso a la BD
+    dynamodb = boto3.resource('dynamodb')
+    carrito = dynamodb.Table(table_cart)
+    producto = dynamodb.Table(table_products)
+
+    user_id = body["user_id"]
+    product_id = body["product_id"]
+    amount = body["amount"]
+
+    # encontrando la información del producto
+    
+    info_prod = producto.get_item(
+        Key={
+            'tenant_id': tenant_id,
+            'producto_id': product_id 
+        }
+    )
+
+    print("Información del producto:")
+    print(info_prod)
+
+    info = info_prod['Item']
+    nombre = info['nombre']
+    precio = info['precio']
+    stock = info['stock']
+
+    # encontrando el carrito del usuario
+
+    response = carrito.get_item(
+        Key={
+            'tenant_id': tenant_id,  
+            'user_id': user_id      
+        }
+    )
+
+    new_stock = stock 
+    # buscando el producto en el carrito
+
+    products = response['Item']['products']
+
+    # Buscar el producto en la lista de productos
+    product_found = False
+    for product in products:
+        if product['product_id'] == product_id:
+            curr_amount = product['amount']
+            if(curr_amount >= amount):
+                product['amount'] = amount
+                new_stock = stock + (curr_amount - amount)  # Actualizar el stock
+            else:
+                if(amount - curr_amount <= stock):
+                    new_stock = stock - (amount - curr_amount)
+                else:
+                    return {
+                        'statusCode': 400,
+                        'body': json.dumps({
+                            'message': f"No hay suficiente stock para el producto. Stock disponible: {stock}, cantidad solicitada: {amount}"
+                        })
+                    }
+            product_found = True
+            break
+
+    if product_found:
+        update_response = carrito.update_item(
+            Key={
+                'tenant_id': tenant_id,
+                'user_id': user_id
+            },
+            UpdateExpression="SET products = :new_products",  # se actualiza toda la lista de productos
+            ExpressionAttributeValues={
+                ':new_products': products 
+            },
+            ReturnValues="UPDATED_NEW"  
+        )
+        print("Respuesta de la actualización:", update_response)
+    else:
+        print(f"Producto con ID {product_id} no encontrado en el carrito.")
+
+
+
+    update_response = producto.update_item(
+        Key={
+            'tenant_id': tenant_id,  
+            'producto_id': product_id  
+        },
+        UpdateExpression="SET stock = :new_stock",  
+        ExpressionAttributeValues={
+            ':new_stock': Decimal(str(new_stock)) 
+        },
+        ReturnValues="UPDATED_NEW" 
+        )
+    
+    
+    return {
+            'statusCode': 200,
+            'body': json.dumps({
+                'message': 'Ítem actualizadocorrectamente.',
+#                'response': response  
+            })
+        }
+
