@@ -62,7 +62,16 @@ functions:
           path: /cart/complete
           method: post
           cors: true
-          integration: lambda-proxy 
+          integration: lambda-proxy
+  historial:
+    handler: GetHistory.lambda_handler
+    events:
+      - http:
+          path: /history
+          method: get
+          cors: true
+          integration: lambda-proxy
+    
 
 resources:
   Resources:
