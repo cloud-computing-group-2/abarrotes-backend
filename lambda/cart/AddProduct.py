@@ -94,14 +94,16 @@ def lambda_handler(event, context):
         }
     )
 
+    new_price = Decimal(str(precio * amount))  # precio del prod * cantidad
+
     new_product = {
 #            'tenant_id': tenant_id,
             'product_id': product_id, 
             'nombre': nombre,
             'amount': amount,          
-            'price': Decimal(str(precio * amount))  # precio del prod * cantidad
+            'price': new_price  # precio del prod * cantidad
         }
-
+    # no verifica i el producto ya está en el carrito del usuario eso se hará en PUT
     if 'Item' in response: # existe
 
         print("Carrito encontrado, actualizando productos...")
@@ -114,6 +116,18 @@ def lambda_handler(event, context):
             UpdateExpression="SET products = list_append(products, :new_product)", 
             ExpressionAttributeValues={
                 ':new_product': [new_product] 
+            },
+            ReturnValues="UPDATED_NEW" 
+        )
+
+        carrito.update_item(
+            Key={
+                'tenant_id': tenant_id,
+                'user_id': user_id
+            },
+            UpdateExpression="SET total_price = total_price + :new_price", 
+            ExpressionAttributeValues={
+                ':new_price': new_price 
             },
             ReturnValues="UPDATED_NEW" 
         )
@@ -132,7 +146,7 @@ def lambda_handler(event, context):
             'cart_id': cart_id,      
             'created_at': created_at,  
             'products': [new_product],  
-            'total_price': new_product['price']
+            'total_price': new_price
         }
 
         response = carrito.put_item(Item=item)
