@@ -14,9 +14,11 @@ provider:
   runtime: python3.12
   timeout: 30
   region: us-east-1
+  stage: ${opt:stage, 'dev'}
   iam:
     role: arn:aws:iam::107956752347:role/LabRole
-
+  environment:
+    TABLE_NAME: ${self:provider.stage}-t-carrito
 
 functions:
   anadir:
@@ -60,6 +62,40 @@ functions:
           cors: true
           integration: lambda-proxy 
 
+resources:
+  Resources:
+    CartTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.TABLE_NAME}
+        AttributeDefinitions:
+          - AttributeName: tenant_id
+            AttributeType: S
+          - AttributeName: user_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: tenant_id
+            KeyType: HASH
+          - AttributeName: user_id
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+    HistoryCartTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.TABLE_NAME}-history
+        AttributeDefinitions:
+          - AttributeName: tenant_id
+            AttributeType: S
+          - AttributeName: compra_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: tenant_id
+            KeyType: HASH
+          - AttributeName: compra_id
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+
+  
 
 
 

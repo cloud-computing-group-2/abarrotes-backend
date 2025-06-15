@@ -1,12 +1,13 @@
 import boto3 
 import json
-from boto3.dynamodb.conditions import Key 
-from decimal import Decimal
+import os
 from datetime import datetime
 
-table_cart = "ab_carrito"
-table_historial = "ab_historial"
-user_validar = "abarrotes-usuarios-dev-validar"
+stage = os.environ.get('stage')
+table_cart = os.environ.get('TABLE_CART', 'dev-t-carrito')
+table_historial = os.environ.get('TABLE_CART', 'dev-t-carrito')+"-historial"
+user_validar = f"abarrotes-usuarios-{stage}-validar"
+table_products = "ab_productos"
 
 def lambda_handler(event, context):
 
