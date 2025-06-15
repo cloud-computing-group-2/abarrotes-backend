@@ -75,7 +75,7 @@ def lambda_handler(event, context):
     update_response = producto.update_item(
         Key={
             'tenant_id': tenant_id,  
-            'product_id': product_id  
+            'producto_id': product_id  
         },
         UpdateExpression="SET stock = :new_stock",  
         ExpressionAttributeValues={
