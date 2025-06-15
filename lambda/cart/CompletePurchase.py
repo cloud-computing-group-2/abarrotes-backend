@@ -62,6 +62,13 @@ def lambda_handler(event, context):
             Item=carrito_item  
         )
 
+        delete_response = carrito.delete_item(
+            Key={
+                'tenant_id': tenant_id,  
+                'user_id': user_id
+            }
+        )
+
         return {
             'statusCode': 200,
             'body': json.dumps({
