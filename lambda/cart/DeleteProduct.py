@@ -2,6 +2,8 @@ import boto3
 import json
 from boto3.dynamodb.conditions import Key 
 from decimal import Decimal
+import uuid
+from datetime import datetime
 
 table_cart = "ab_carrito"
 table_products = "ab_productos"
@@ -69,10 +71,10 @@ def lambda_handler(event, context):
         }
     )
 
-    new_stock = stock 
     # buscando el producto en el carrito
 
     products = response['Item']['products']
+    curr_amount = 0
     curr_total_price = response['Item']['total_price']
 
     # Buscar el producto en la lista de productos
@@ -80,26 +82,13 @@ def lambda_handler(event, context):
     for product in products:
         if product['product_id'] == product_id:
             curr_amount = product['amount']
-            if(curr_amount >= amount):
-                product['amount'] = amount
-                product['price'] = Decimal(precio*amount) 
-                new_stock = stock + (curr_amount - amount)  # Actualizar el stock
-            else:
-                if(amount - curr_amount <= stock):
-                    product['amount'] = amount
-                    product['price'] = Decimal(precio*amount)   
-                    new_stock = stock - (amount - curr_amount)
-                else:
-                    return {
-                        'statusCode': 400,
-                        'body': json.dumps({
-                            'message': f"No hay suficiente stock para el producto. Stock disponible: {stock}, cantidad solicitada: {amount}"
-                        })
-                    }
+            products.remove(product)  
             product_found = True
             break
 
-    new_price = curr_total_price - (curr_amount * precio) + (amount * precio)
+    new_price = curr_total_price - (curr_amount * precio)
+    new_stock = stock + curr_amount
+
     
     if product_found:
         update_response = carrito.update_item(
@@ -128,7 +117,6 @@ def lambda_handler(event, context):
         print("Respuesta de la actualización:", update_response)
     else:
         print(f"Producto con ID {product_id} no encontrado en el carrito.")
-
 
 
     update_response = producto.update_item(
