@@ -8,7 +8,7 @@ def lambda_handler(event, context):
 
     print(event)
     # Entrada (json)
-    body =  json.loads(event['body'])
+    body =  event['body']
     
     # Inicio - Proteger el Lambda
     token = event['headers']['Authorization']

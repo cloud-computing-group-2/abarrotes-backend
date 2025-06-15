@@ -26,6 +26,6 @@ functions:
           path: /cart/add
           method: post
           cors: true
-          integration: lambda
+          integration: lambda-proxy 
 
 
