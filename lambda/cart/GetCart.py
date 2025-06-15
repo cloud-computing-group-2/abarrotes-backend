@@ -11,11 +11,12 @@ def lambda_handler(event, context):
 
     print(event)
     # Entrada (json)
-    body =  json.loads(event['body'])
-    
+    query_params = event.get('queryStringParameters', {})
+    user_id = query_params.get('user_id')
+    tenant_id = query_params.get('tenant_id')
+
     # Inicio - Proteger el Lambda
     token = event['headers']['Authorization']
-    tenant_id = body['tenant_id']
 
     lambda_client = boto3.client('lambda')    
     payload = {
@@ -37,8 +38,6 @@ def lambda_handler(event, context):
     # Acceso a la BD
     dynamodb = boto3.resource('dynamodb')
     carrito = dynamodb.Table(table_cart)
-
-    user_id = body["user_id"]
 
     # encontrando el carrito del usuario
 
