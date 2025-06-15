@@ -84,10 +84,12 @@ def lambda_handler(event, context):
             curr_amount = product['amount']
             if(curr_amount >= amount):
                 product['amount'] = amount
+                product['price'] = Decimal(precio*amount) 
                 new_stock = stock + (curr_amount - amount)  # Actualizar el stock
             else:
                 if(amount - curr_amount <= stock):
                     product['amount'] = amount
+                    product['price'] = Decimal(precio*amount) 
                     new_stock = stock - (amount - curr_amount)
                 else:
                     return {
@@ -119,7 +121,7 @@ def lambda_handler(event, context):
                 'tenant_id': tenant_id,
                 'user_id': user_id
             },
-            UpdateExpression="SET total_price = :new_price",  # se actualiza toda la lista de productos
+            UpdateExpression="SET total_price = :new_price",  # se actualiza precio total del carrito
             ExpressionAttributeValues={
                 ':new_price': new_price
             },
