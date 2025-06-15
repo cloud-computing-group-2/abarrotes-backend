@@ -21,34 +21,34 @@ functions:
     handler: ProductGet.handler
     events:
       - http:
-        path: /productos/buscar
-        method: get
-        cors: true
-        integration: lambda
+          path: /productos/buscar
+          method: get
+          cors: true
+          integration: lambda
   listar:
     handler: ProductList.handler
     events:
       - http:
-        path: /productos/listar
-        method: get
-        cors: true
-        integration: lambda
+          path: /productos/listar
+          method: get
+          cors: true
+          integration: lambda
   modificar:
     handler: ProductModify.handler
     events:
       - http:
-        path: /productos/modificar
-        method: patch
-        cors: true
-        integration: lambda
+          path: /productos/modificar
+          method: patch
+          cors: true
+          integration: lambda
   eliminar:
     handler: ProductDelete.handler
     events:
       - http:
-        path: /productos/eliminar
-        method: delete
-        cors: true
-        integration: lambda
+          path: /productos/eliminar
+          method: delete
+          cors: true
+          integration: lambda
         
   
 
