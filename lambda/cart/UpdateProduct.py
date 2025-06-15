@@ -86,6 +86,7 @@ def lambda_handler(event, context):
                 new_stock = stock + (curr_amount - amount)  # Actualizar el stock
             else:
                 if(amount - curr_amount <= stock):
+                    product['amount'] = amount
                     new_stock = stock - (amount - curr_amount)
                 else:
                     return {
@@ -131,7 +132,7 @@ def lambda_handler(event, context):
     return {
             'statusCode': 200,
             'body': json.dumps({
-                'message': 'Ítem actualizadocorrectamente.',
+                'message': 'Ítem actualizado correctamente.',
 #                'response': response  
             })
         }
