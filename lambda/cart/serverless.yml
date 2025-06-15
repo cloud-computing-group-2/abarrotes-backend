@@ -35,6 +35,14 @@ functions:
           method: put
           cors: true
           integration: lambda-proxy 
+  eliminar:
+    handler: DeleteProduct.lambda_handler
+    events:
+      - http:
+          path: /cart/delete
+          method: put
+          cors: true
+          integration: lambda-proxy 
 
 
 
