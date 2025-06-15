@@ -88,12 +88,12 @@ resources:
         AttributeDefinitions:
           - AttributeName: tenant_id
             AttributeType: S
-          - AttributeName: compra_id
+          - AttributeName: user_id
             AttributeType: S
         KeySchema:
           - AttributeName: tenant_id
             KeyType: HASH
-          - AttributeName: compra_id
+          - AttributeName: user_id
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
 
