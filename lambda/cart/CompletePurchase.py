@@ -56,6 +56,8 @@ def lambda_handler(event, context):
     if 'Item' in response: 
 
         carrito_item = response['Item']
+        carrito_item['tenant_id'] = f"{tenant_id}#{user_id}"
+        carrito_item.pop('user_id', None)
         carrito_item['completed_at'] = datetime.now().isoformat() 
 
         put_response = historial.put_item(

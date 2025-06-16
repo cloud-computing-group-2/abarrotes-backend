@@ -95,14 +95,14 @@ resources:
       Properties:
         TableName: ${self:provider.environment.TABLE_NAME}-history
         AttributeDefinitions:
-          - AttributeName: tenant_id
+          - AttributeName: tenant_id # Tenantid + user_id
             AttributeType: S
-          - AttributeName: user_id
+          - AttributeName: cart_id
             AttributeType: S
         KeySchema:
-          - AttributeName: tenant_id
+          - AttributeName: tenant_id  # Tenantid + user_id
             KeyType: HASH
-          - AttributeName: user_id
+          - AttributeName: cart_id
             KeyType: RANGE
         BillingMode: PAY_PER_REQUEST
 

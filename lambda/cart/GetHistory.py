@@ -3,6 +3,7 @@ import json
 import os
 from datetime import datetime
 from decimal import Decimal
+from boto3.dynamodb.conditions import Key
 
 stage = os.environ.get('stage')
 table_historial = os.environ.get('TABLE_CART', 'dev-t-carrito')+"-history"
@@ -23,7 +24,6 @@ def lambda_handler(event, context):
     print(event)
     # Entrada (json)
     query_params = event.get('queryStringParameters', {})
-    user_id = query_params.get('user_id')
     tenant_id = query_params.get('tenant_id')
     limit = int(query_params.get('limit', 10))
     
@@ -52,14 +52,16 @@ def lambda_handler(event, context):
 
     # encontrando el historial del usuario
 
-    params = {
-        'Limit': limit
-    }
+    params ={
+            'KeyConditionExpression': Key('tenant_id').eq(tenant_id),
+            'Limit': limit
+            }
 
-    last_evaluated_key = query_params.get('last_evaluated_key')
-    if last_evaluated_key:
+
+    lek = query_params.get('last_evaluated_key')
+    if lek:
         try:
-            params['ExclusiveStartKey'] = json.loads(last_evaluated_key)
+            params['ExclusiveStartKey'] = json.loads(lek)
         except json.JSONDecodeError:
             return {
                 'statusCode': 400,
@@ -67,22 +69,20 @@ def lambda_handler(event, context):
             }
 
     try:
-        response = historial.scan(**params)
+        resp = historial.query(**params)
+        items = decimal_to_float(resp.get('Items', []))
+        next_key = resp.get('LastEvaluatedKey')
 
-        items = response.get('Items', [])
-        last_evaluated_key = response.get('LastEvaluatedKey', None)
-        items = decimal_to_float(items)
-        
         return {
             'statusCode': 200,
             'body': json.dumps({
-                'items': items,  # Elementos obtenidos
-                'last_evaluated_key': last_evaluated_key  # Clave para la siguiente página de resultados
+                'items': items,
+                'last_evaluated_key': json.dumps(next_key) if next_key else None
             })
         }
 
     except Exception as e:
         return {
             'statusCode': 500,
-            'body': json.dumps({'message': f'Error al acceder a DynamoDB: {str(e)}'})
+            'body': json.dumps({'message': f'Error al consultar historial: {str(e)}'})
         }
