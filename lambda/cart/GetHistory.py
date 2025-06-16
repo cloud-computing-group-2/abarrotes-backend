@@ -33,7 +33,7 @@ def lambda_handler(event, context):
     lambda_client = boto3.client('lambda')    
     payload = {
     "token": token,
-    "tenant_id": tenant_id
+    "tenant_id": tenant_id.split('#', 1)[0]
     }
     invoke_response = lambda_client.invoke(FunctionName=user_validar,
                                            InvocationType='RequestResponse',
@@ -67,6 +67,8 @@ def lambda_handler(event, context):
                 'statusCode': 400,
                 'body': json.dumps({'message': 'last_evaluated_key no es válido'})
             }
+        
+    print
 
     try:
         resp = historial.query(**params)
