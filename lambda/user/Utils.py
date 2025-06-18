@@ -10,5 +10,3 @@ def load_body(event):
         return event['body']
     else:
         return json.loads(event['body'])
-
-

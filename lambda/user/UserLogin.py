@@ -8,6 +8,9 @@ from datetime import datetime, timedelta
 # Expire time
 expire_time = timedelta(hours=5)
 
+table_users = "ab_usuarios"
+table_tokens = "ab_tokens_acceso"
+
 # Hashear contraseña
 def verify_password(password, hashed):
     return bcrypt.checkpw(password.encode(), hashed.encode())
@@ -22,7 +25,7 @@ def lambda_handler(event, context):
     password = body.get('password')
 
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('ab_usuarios')
+    table = dynamodb.Table(table_users)
     response = table.get_item(
         Key={
             'tenant_id': tenant_id,
@@ -46,7 +49,7 @@ def lambda_handler(event, context):
                 "tenant_id": tenant_id,
                 'expires': fecha_hora_exp.strftime('%Y-%m-%d %H:%M:%S')
             }
-            table = dynamodb.Table('ab_tokens_acceso')
+            table = dynamodb.Table(table_tokens)
             dynamodbResponse = table.put_item(Item=item_token)
         else:
             return {
