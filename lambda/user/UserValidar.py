@@ -35,7 +35,7 @@ def lambda_handler(event, context):
                 'body': 'Token expirado'
             }
 
-
+    print("success")
     return {
         'statusCode': 200,
         'body': 'Token válido'
