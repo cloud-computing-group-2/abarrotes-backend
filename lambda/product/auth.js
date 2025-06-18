@@ -18,7 +18,9 @@ async function validateToken(token, tenant_id) {
   }
 
   var res = await lambda.invoke(params).promise();
+  print(res)
   const result = JSON.parse(res.Payload);
+  print(result)
 
   if (result.statusCode === 403) {
     throw new Error('Token inválido o expirado');
