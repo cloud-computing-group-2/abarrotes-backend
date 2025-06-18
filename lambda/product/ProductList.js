@@ -6,7 +6,7 @@ const tableName = 'ab_productos';
 
 exports.handler = async (event) => {
   try {
-    const token = headers.Authorization || headers.authorization
+    const token = event.headers.Authorization || event.headers.authorization
     const tenant_id = event.queryStringParameters?.tenant_id;
     const limit = parseInt(event.queryStringParameters?.limit) || 10
     const nextToken = event.queryStringParameters?.nextToken
