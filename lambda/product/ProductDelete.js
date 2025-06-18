@@ -7,15 +7,17 @@ const tableName = 'ab_productos';
 
 exports.handler = async (event) => {
   try {
+    const token = headers.Authorization || headers.authorization
+    
     body = typeof event.body === 'string' ? JSON.parse(event.body) : event.body
-    const { token, tenant_id, producto_id } = body;
+    const { tenant_id, producto_id } = body;
     await validateToken(token, tenant_id);
 
     const params = {
         TableName: tableName,
         Key: {
-          tenant_id: 'utec',
-          producto_id: '12345'
+          tenant_id: tenant_id,
+          producto_id: producto_id
         }
       };
 

@@ -1,15 +1,29 @@
+
 const AWS = require('aws-sdk');
-const dynamo = new AWS.DynamoDB.DocumentClient();
+
+const lambda = new AWS.Lambda();
+
+const ENV = process.env.STAGE || 'dev';
 
 async function validateToken(token, tenant_id) {
-  const res = await dynamo.get({
-    TableName: 'ab_tokens_acceso',
-    Key: { token, tenant_id }
-  }).promise();
-
-  if (!res.Item || new Date(res.Item.expires) < new Date()) {
+  if (!token || !tenant_id) {
     throw new Error('Token inválido o expirado');
   }
+
+  const payload = { token, tenant_id };
+  const params = {
+    FunctionName: `abarrotes-usuarios-${ENV}-validar`,
+    InvocationType: "RequestResponse",
+    Payload: JSON.stringify(payload)
+  }
+
+  var res = await lambda.invoke(params).promise();
+  const result = JSON.parse(res.Payload);
+
+  if (result.statusCode === 403) {
+    throw new Error('Token inválido o expirado');
+  }
+  return true;
 }
 
 module.exports = {
