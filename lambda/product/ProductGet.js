@@ -7,8 +7,7 @@ const tableName = 'ab_productos';
 exports.handler = async (event) => {
   try {
     const token = event.headers.Authorization || event.headers.authorization
-    body = typeof event.body === 'string' ? JSON.parse(event.body) : event.body
-    const { tenant_id, producto_id } = body;
+    const { tenant_id, producto_id } = event.queryStringParameters || {};
     await validateToken(token, tenant_id);
 
     const params = {
@@ -20,11 +19,13 @@ exports.handler = async (event) => {
       }
     };
 
-    await dynamo.query(params).promise();
+    const result = await dynamo.query(params).promise();
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'deleted item: ' + producto_id, })
+      body: JSON.stringify({
+        items: result.Items
+      })
     };
   } catch (err) {
     return {
