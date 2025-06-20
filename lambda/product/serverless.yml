@@ -4,6 +4,9 @@ service: abarrotes-productos
 custom:
   stage: ${opt:stage, 'dev'}
 
+plugins:
+  - serverless-openapi-documentation
+
 provider:
   name: aws
   runtime: nodejs20.x
@@ -23,6 +26,7 @@ functions:
           method: post
           cors: true
           integration: lambda
+
   buscar:
     handler: ProductGet.handler
     events:
@@ -31,6 +35,7 @@ functions:
           method: get
           cors: true
           integration: lambda
+
   listar:
     handler: ProductList.handler
     events:
@@ -39,6 +44,7 @@ functions:
           method: get
           cors: true
           integration: lambda
+
   modificar:
     handler: ProductModify.handler
     events:
@@ -47,6 +53,7 @@ functions:
           method: patch
           cors: true
           integration: lambda
+
   eliminar:
     handler: ProductDelete.handler
     events:
@@ -55,6 +62,83 @@ functions:
           method: delete
           cors: true
           integration: lambda
-        
-  
 
+  swaggerui:
+    handler: swagger.lambda_handler
+    events:
+      - http:
+          path: /docs
+          method: get
+          cors: true
+
+  openapi:
+    handler: swagger.openapi_handler
+    events:
+      - http:
+          path: /openapi.yaml
+          method: get
+          cors: true
+
+custom:
+  documentation:
+    apiInfo:
+      version: '1.0.0'
+      title: Abarrotes Productos API
+      description: API para crear, buscar, listar, modificar y eliminar productos
+    models:
+      - name: ProductRequest
+        contentType: 'application/json'
+        schema:
+          type: object
+          properties:
+            producto_id:
+              type: string
+              description: "ID único del producto"
+            tenant_id:
+              type: string
+              description: "ID del tenant"
+            nombre:
+              type: string
+              description: "Nombre del producto"
+            precio:
+              type: number
+              format: float
+              description: "Precio del producto"
+            stock:
+              type: integer
+              description: "Cantidad en stock"
+    endpoints:
+      - path: /productos/crear
+        method: post
+        description: Crear producto
+        requestModels:
+          'application/json': ProductRequest
+        responseMessages:
+          - code: 200
+            message: Producto creado con éxito
+      - path: /productos/buscar
+        method: get
+        description: Buscar producto
+        responseMessages:
+          - code: 200
+            message: Producto encontrado
+      - path: /productos/listar
+        method: get
+        description: Listar productos
+        responseMessages:
+          - code: 200
+            message: Productos listados con éxito
+      - path: /productos/modificar
+        method: patch
+        description: Modificar producto
+        requestModels:
+          'application/json': ProductRequest
+        responseMessages:
+          - code: 200
+            message: Producto modificado con éxito
+      - path: /productos/eliminar
+        method: delete
+        description: Eliminar producto
+        responseMessages:
+          - code: 200
+            message: Producto eliminado con éxito
