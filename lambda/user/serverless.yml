@@ -54,6 +54,7 @@ provider:
 functions:
   registrar:
     handler: UserCreate.lambda_handler
+    documentation: true
     events:
       - http:
           path: /usuarios/registrar
@@ -62,6 +63,7 @@ functions:
           integration: lambda
   validar:
     handler: UserValidar.lambda_handler
+    documentation: true
     events:
       - http:
           path: /usuarios/validar
@@ -70,6 +72,7 @@ functions:
           integration: lambda
   login:
     handler: UserLogin.lambda_handler
+    documentation: true
     events:
       - http:
           path: /usuarios/login
