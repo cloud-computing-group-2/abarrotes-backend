@@ -30,48 +30,13 @@ custom:
             stock:
               type: integer
               description: "Cantidad en stock"
-    endpoints:
-      - path: /productos/crear
-        method: post
-        description: Crear producto
-        requestModels:
-          'application/json': ProductRequest
-        responseMessages:
-          - code: 200
-            message: Producto creado con éxito
-      - path: /productos/buscar
-        method: get
-        description: Buscar producto
-        responseMessages:
-          - code: 200
-            message: Producto encontrado
-      - path: /productos/listar
-        method: get
-        description: Listar productos
-        responseMessages:
-          - code: 200
-            message: Productos listados con éxito
-      - path: /productos/modificar
-        method: patch
-        description: Modificar producto
-        requestModels:
-          'application/json': ProductRequest
-        responseMessages:
-          - code: 200
-            message: Producto modificado con éxito
-      - path: /productos/eliminar
-        method: delete
-        description: Eliminar producto
-        responseMessages:
-          - code: 200
-            message: Producto eliminado con éxito
 
 plugins:
   - serverless-openapi-documentation
 
 provider:
   name: aws
-  runtime: nodejs20.x
+  runtime: nodejs18.x  # te recomiendo usar nodejs18.x compatible con serverless 3.29
   timeout: 30
   stage: ${self:custom.stage}
   iam:
@@ -82,6 +47,10 @@ provider:
 functions:
   crear:
     handler: ProductCreate.handler
+    documentation:
+      summary: Crear producto
+      requestModels:
+        'application/json': ProductRequest
     events:
       - http:
           path: /productos/crear
@@ -91,6 +60,8 @@ functions:
 
   buscar:
     handler: ProductGet.handler
+    documentation:
+      summary: Buscar producto
     events:
       - http:
           path: /productos/buscar
@@ -100,6 +71,8 @@ functions:
 
   listar:
     handler: ProductList.handler
+    documentation:
+      summary: Listar productos
     events:
       - http:
           path: /productos/listar
@@ -109,6 +82,10 @@ functions:
 
   modificar:
     handler: ProductModify.handler
+    documentation:
+      summary: Modificar producto
+      requestModels:
+        'application/json': ProductRequest
     events:
       - http:
           path: /productos/modificar
@@ -118,6 +95,10 @@ functions:
 
   eliminar:
     handler: ProductDelete.handler
+    documentation:
+      summary: Eliminar producto
+      requestModels:
+        'application/json': ProductRequest
     events:
       - http:
           path: /productos/eliminar
