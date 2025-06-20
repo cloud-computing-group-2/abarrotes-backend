@@ -32,10 +32,27 @@ custom:
         schema:
           type: object
           properties:
-            email:
+            user_id:
               type: string
+              description: "User ID (correo electrónico)"
+            tenant_id:
+              type: string
+              description: "Tenant ID (nombre del establecimiento)"
             password:
               type: string
+              description: "User password"
+    models:
+      - name: UserValidateRequest
+        contentType: 'application/json'
+        schema:
+          type: object
+          properties:
+            token:
+              type: string
+              description: "Token por validar al lambda authorizer"
+            tenant_id:
+              type: string
+              description: "Tenant ID (nombre del establecimiento)"
 
 functions:
   registrar:
