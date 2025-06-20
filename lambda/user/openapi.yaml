@@ -3,11 +3,11 @@ service: abarrotes-usuarios
 
 plugins:
   - serverless-python-requirements
-  - serverless-aws-documentation
+  - serverless-openapi-documentation
 
 provider:
   name: aws
-  runtime: python3.11
+  runtime: python3.9  # compatible con serverless 3.29
   timeout: 30
   region: us-east-1
   iam:
@@ -21,11 +21,10 @@ custom:
     useStaticCache: false
 
   documentation:
-    api:
-      info:
-        version: '1.0.0'
-        title: Abarrotes Usuarios API
-        description: API para registrar, validar y autenticar usuarios
+    apiInfo:
+      version: '1.0.0'
+      title: Abarrotes Usuarios API
+      description: API para registrar, validar y autenticar usuarios
     models:
       - name: UserRequest
         contentType: 'application/json'
@@ -36,14 +35,26 @@ custom:
               type: string
             password:
               type: string
+    endpoints:
+      - path: /usuarios/registrar
+        method: post
+        description: Registrar usuario
+        requestModels:
+          'application/json': UserRequest
+      - path: /usuarios/validar
+        method: post
+        description: Validar usuario
+        requestModels:
+          'application/json': UserRequest
+      - path: /usuarios/login
+        method: post
+        description: Login usuario
+        requestModels:
+          'application/json': UserRequest
 
 functions:
   registrar:
     handler: UserCreate.lambda_handler
-    documentation:
-      summary: Registrar usuario
-      requestModels:
-        'application/json': UserRequest
     events:
       - http:
           path: /usuarios/registrar
@@ -53,10 +64,6 @@ functions:
 
   validar:
     handler: UserValidar.lambda_handler
-    documentation:
-      summary: Validar usuario
-      requestModels:
-        'application/json': UserRequest
     events:
       - http:
           path: /usuarios/validar
@@ -66,10 +73,6 @@ functions:
 
   login:
     handler: UserLogin.lambda_handler
-    documentation:
-      summary: Login usuario
-      requestModels:
-        'application/json': UserRequest
     events:
       - http:
           path: /usuarios/login
