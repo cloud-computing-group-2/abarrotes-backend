@@ -13,7 +13,6 @@ provider:
   iam:
     role: arn:aws:iam::107956752347:role/LabRole
 
-
 custom:
   pythonRequirements:
     dockerizePip: true
@@ -49,6 +48,7 @@ functions:
           method: post
           cors: true
           integration: lambda
+
   validar:
     handler: UserValidar.lambda_handler
     documentation:
@@ -61,6 +61,7 @@ functions:
           method: post
           cors: true
           integration: lambda
+
   login:
     handler: UserLogin.lambda_handler
     documentation:
@@ -73,3 +74,19 @@ functions:
           method: post
           cors: true
           integration: lambda
+
+  swaggerui:
+    handler: swagger.lambda_handler
+    events:
+      - http:
+          path: /docs
+          method: get
+          cors: true
+
+  openapi:
+    handler: swagger.openapi_handler
+    events:
+      - http:
+          path: /openapi.yaml
+          method: get
+          cors: true

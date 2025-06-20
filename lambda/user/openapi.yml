@@ -1,0 +1,48 @@
+openapi: 3.0.0
+info:
+  title: Abarrotes Usuarios API
+  description: API para registrar, validar y autenticar usuarios
+  version: 1.0.0
+paths:
+  /usuarios/registrar:
+    post:
+      summary: Registrar usuario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: OK
+  /usuarios/validar:
+    post:
+      summary: Validar usuario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: OK
+  /usuarios/login:
+    post:
+      summary: Login usuario
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    UserRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
