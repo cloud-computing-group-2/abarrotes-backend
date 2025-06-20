@@ -45,10 +45,24 @@ paths:
 
 components:
   schemas:
-    UserRequest:
+    UserAccessRequest:
       type: object
       properties:
-        email:
+        user_id:
           type: string
+          description: "User ID (correo electrónico)"
+        tenant_id:
+          type: string
+          description: "Tenant ID (nombre del establecimiento)"
         password:
           type: string
+          description: "User password"
+    UserValidateRequest:
+      type: object
+      properties:
+        token:
+          type: string
+          description: "Token por validar al lambda authorizer"
+        tenant_id:
+          type: string
+          description: "Tenant ID (nombre del establecimiento)"
