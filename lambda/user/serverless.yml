@@ -5,18 +5,16 @@ plugins:
   - serverless-python-requirements
   - serverless-openapi-documentation
 
-
 custom:
   pythonRequirements:
     dockerizePip: true
     layer: false
   
   documentation:
-    api:
-      info:
-        version: '1.0.0'
-        title: Abarrotes Usuarios API
-        description: API para registrar, validar y autenticar usuarios
+    apiInfo:
+      version: '1.0.0'
+      title: Abarrotes Usuarios API
+      description: API para registrar, validar y autenticar usuarios
     models:
       - name: UserRequest
         contentType: 'application/json'
@@ -27,6 +25,22 @@ custom:
               type: string
             password:
               type: string
+    endpoints:
+      - path: /usuarios/registrar
+        method: post
+        description: Registrar usuario
+        requestModels:
+          'application/json': UserRequest
+      - path: /usuarios/validar
+        method: post
+        description: Validar usuario
+        requestModels:
+          'application/json': UserRequest
+      - path: /usuarios/login
+        method: post
+        description: Login usuario
+        requestModels:
+          'application/json': UserRequest
 
 provider:
   name: aws
