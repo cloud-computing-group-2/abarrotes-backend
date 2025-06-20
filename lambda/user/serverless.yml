@@ -17,6 +17,8 @@ custom:
   pythonRequirements:
     dockerizePip: true
     layer: false
+    useDownloadCache: false
+    useStaticCache: false
 
   documentation:
     api:
