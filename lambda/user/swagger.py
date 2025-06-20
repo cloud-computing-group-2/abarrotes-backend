@@ -23,7 +23,7 @@ def lambda_handler(event, context):
     return {
         "statusCode": 200,
         "headers": {
-            "Content-Type": "text/html"
+            "Content-Type": "text/html",
         },
         "body": html_content
     }
@@ -34,7 +34,8 @@ def openapi_handler(event, context):
     return {
         "statusCode": 200,
         "headers": {
-            "Content-Type": "application/yaml"
+            "Content-Type": "application/yaml",
+            "Access-Control-Allow-Origin": "*"
         },
         "body": content
     }
