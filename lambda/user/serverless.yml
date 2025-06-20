@@ -1,20 +1,18 @@
-org: salvadordonayre
-service: abarrotes-usuarios
-
 plugins:
   - serverless-python-requirements
-  - serverless-openapi-documentation
+  - serverless-aws-documentation
 
 custom:
   pythonRequirements:
     dockerizePip: true
     layer: false
-  
+
   documentation:
-    apiInfo:
-      version: '1.0.0'
-      title: Abarrotes Usuarios API
-      description: API para registrar, validar y autenticar usuarios
+    api:
+      info:
+        version: '1.0.0'
+        title: Abarrotes Usuarios API
+        description: API para registrar, validar y autenticar usuarios
     models:
       - name: UserRequest
         contentType: 'application/json'
@@ -25,36 +23,14 @@ custom:
               type: string
             password:
               type: string
-    endpoints:
-      - path: /usuarios/registrar
-        method: post
-        description: Registrar usuario
-        requestModels:
-          'application/json': UserRequest
-      - path: /usuarios/validar
-        method: post
-        description: Validar usuario
-        requestModels:
-          'application/json': UserRequest
-      - path: /usuarios/login
-        method: post
-        description: Login usuario
-        requestModels:
-          'application/json': UserRequest
-
-provider:
-  name: aws
-  runtime: python3.11
-  timeout: 30
-  region: us-east-1
-  iam:
-    role: arn:aws:iam::107956752347:role/LabRole
-
 
 functions:
   registrar:
     handler: UserCreate.lambda_handler
-    documentation: true
+    documentation:
+      summary: Registrar usuario
+      requestModels:
+        'application/json': UserRequest
     events:
       - http:
           path: /usuarios/registrar
@@ -63,7 +39,10 @@ functions:
           integration: lambda
   validar:
     handler: UserValidar.lambda_handler
-    documentation: true
+    documentation:
+      summary: Validar usuario
+      requestModels:
+        'application/json': UserRequest
     events:
       - http:
           path: /usuarios/validar
@@ -72,13 +51,13 @@ functions:
           integration: lambda
   login:
     handler: UserLogin.lambda_handler
-    documentation: true
+    documentation:
+      summary: Login usuario
+      requestModels:
+        'application/json': UserRequest
     events:
       - http:
           path: /usuarios/login
           method: post
           cors: true
           integration: lambda
-
-
-
