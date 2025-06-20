@@ -60,10 +60,6 @@ functions:
           method: post
           cors: true
           integration: lambda
-          documentation:
-            summary: Registrar usuario
-            requestModels:
-              'application/json': UserRequest
   validar:
     handler: UserValidar.lambda_handler
     events:
@@ -72,10 +68,6 @@ functions:
           method: post
           cors: true
           integration: lambda
-          documentation:
-            summary: Validar usuario
-            requestModels:
-              'application/json': UserRequest
   login:
     handler: UserLogin.lambda_handler
     events:
@@ -84,10 +76,6 @@ functions:
           method: post
           cors: true
           integration: lambda
-          documentation:
-            summary: Login usuario
-            requestModels:
-              'application/json': UserRequest
 
 
 
