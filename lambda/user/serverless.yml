@@ -44,7 +44,7 @@ custom:
 
 provider:
   name: aws
-  runtime: python3.12
+  runtime: python3.11
   timeout: 30
   region: us-east-1
   iam:
