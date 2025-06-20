@@ -41,7 +41,6 @@ custom:
             password:
               type: string
               description: "User password"
-    models:
       - name: UserValidateRequest
         contentType: 'application/json'
         schema:
