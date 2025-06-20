@@ -1,12 +1,18 @@
 org: salvadordonayre
 service: abarrotes-productos
 
+custom:
+  stage: ${opt:stage, 'dev'}
+
 provider:
   name: aws
   runtime: nodejs20.x
   timeout: 30
+  stage: ${self:custom.stage}
   iam:
     role: arn:aws:iam::107956752347:role/LabRole
+  environment:
+    STAGE: ${self:custom.stage}
 
 functions:
   crear:

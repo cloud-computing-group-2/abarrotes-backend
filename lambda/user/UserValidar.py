@@ -20,12 +20,14 @@ def lambda_handler(event, context):
         }
     )
     if 'Item' not in response or response['Item'].get('tenant_id') != tenant_id:
+        print("error with ", tenant_id, " response: ", response)
         return {
             'statusCode': 403,
             'body': 'Token no existe'
         }
     else:
         expires = response['Item']['expires']
+        print("expires ", expires)
         now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         if now > expires:
             return {
@@ -33,7 +35,7 @@ def lambda_handler(event, context):
                 'body': 'Token expirado'
             }
 
-
+    print("success")
     return {
         'statusCode': 200,
         'body': 'Token válido'
