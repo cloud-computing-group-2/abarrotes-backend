@@ -2,6 +2,15 @@ plugins:
   - serverless-python-requirements
   - serverless-aws-documentation
 
+provider:
+  name: aws
+  runtime: python3.11
+  timeout: 30
+  region: us-east-1
+  iam:
+    role: arn:aws:iam::107956752347:role/LabRole
+
+
 custom:
   pythonRequirements:
     dockerizePip: true
