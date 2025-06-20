@@ -3,7 +3,7 @@ service: abarrotes-usuarios
 
 plugins:
   - serverless-python-requirements
-  - serverless-aws-documentation
+  - serverless-openapi-documentation
 
 
 custom:
