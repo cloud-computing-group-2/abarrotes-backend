@@ -15,7 +15,7 @@ custom:
     api:
       info:
         version: '1.0.0'
-      title: Abarrotes Usuarios API
+        title: Abarrotes Usuarios API
         description: API para registrar, validar y autenticar usuarios
     models:
       - name: UserRequest
