@@ -3,6 +3,68 @@ service: abarrotes-productos
 
 custom:
   stage: ${opt:stage, 'dev'}
+  documentation:
+    apiInfo:
+      version: '1.0.0'
+      title: Abarrotes Productos API
+      description: API para crear, buscar, listar, modificar y eliminar productos
+    models:
+      - name: ProductRequest
+        contentType: 'application/json'
+        schema:
+          type: object
+          properties:
+            producto_id:
+              type: string
+              description: "ID único del producto"
+            tenant_id:
+              type: string
+              description: "ID del tenant"
+            nombre:
+              type: string
+              description: "Nombre del producto"
+            precio:
+              type: number
+              format: float
+              description: "Precio del producto"
+            stock:
+              type: integer
+              description: "Cantidad en stock"
+    endpoints:
+      - path: /productos/crear
+        method: post
+        description: Crear producto
+        requestModels:
+          'application/json': ProductRequest
+        responseMessages:
+          - code: 200
+            message: Producto creado con éxito
+      - path: /productos/buscar
+        method: get
+        description: Buscar producto
+        responseMessages:
+          - code: 200
+            message: Producto encontrado
+      - path: /productos/listar
+        method: get
+        description: Listar productos
+        responseMessages:
+          - code: 200
+            message: Productos listados con éxito
+      - path: /productos/modificar
+        method: patch
+        description: Modificar producto
+        requestModels:
+          'application/json': ProductRequest
+        responseMessages:
+          - code: 200
+            message: Producto modificado con éxito
+      - path: /productos/eliminar
+        method: delete
+        description: Eliminar producto
+        responseMessages:
+          - code: 200
+            message: Producto eliminado con éxito
 
 plugins:
   - serverless-openapi-documentation
@@ -78,67 +140,3 @@ functions:
           path: /openapi.yaml
           method: get
           cors: true
-
-custom:
-  documentation:
-    apiInfo:
-      version: '1.0.0'
-      title: Abarrotes Productos API
-      description: API para crear, buscar, listar, modificar y eliminar productos
-    models:
-      - name: ProductRequest
-        contentType: 'application/json'
-        schema:
-          type: object
-          properties:
-            producto_id:
-              type: string
-              description: "ID único del producto"
-            tenant_id:
-              type: string
-              description: "ID del tenant"
-            nombre:
-              type: string
-              description: "Nombre del producto"
-            precio:
-              type: number
-              format: float
-              description: "Precio del producto"
-            stock:
-              type: integer
-              description: "Cantidad en stock"
-    endpoints:
-      - path: /productos/crear
-        method: post
-        description: Crear producto
-        requestModels:
-          'application/json': ProductRequest
-        responseMessages:
-          - code: 200
-            message: Producto creado con éxito
-      - path: /productos/buscar
-        method: get
-        description: Buscar producto
-        responseMessages:
-          - code: 200
-            message: Producto encontrado
-      - path: /productos/listar
-        method: get
-        description: Listar productos
-        responseMessages:
-          - code: 200
-            message: Productos listados con éxito
-      - path: /productos/modificar
-        method: patch
-        description: Modificar producto
-        requestModels:
-          'application/json': ProductRequest
-        responseMessages:
-          - code: 200
-            message: Producto modificado con éxito
-      - path: /productos/eliminar
-        method: delete
-        description: Eliminar producto
-        responseMessages:
-          - code: 200
-            message: Producto eliminado con éxito
