@@ -3,11 +3,30 @@ service: abarrotes-usuarios
 
 plugins:
   - serverless-python-requirements
+  - serverless-aws-documentation
+
 
 custom:
   pythonRequirements:
     dockerizePip: true
     layer: false
+  
+  documentation:
+    api:
+      info:
+        version: '1.0.0'
+      title: Abarrotes Usuarios API
+        description: API para registrar, validar y autenticar usuarios
+    models:
+      - name: UserRequest
+        contentType: 'application/json'
+        schema:
+          type: object
+          properties:
+            email:
+              type: string
+            password:
+              type: string
 
 provider:
   name: aws
@@ -27,6 +46,10 @@ functions:
           method: post
           cors: true
           integration: lambda
+          documentation:
+            summary: Registrar usuario
+            requestModels:
+              'application/json': UserRequest
   validar:
     handler: UserValidar.lambda_handler
     events:
@@ -35,6 +58,10 @@ functions:
           method: post
           cors: true
           integration: lambda
+          documentation:
+            summary: Validar usuario
+            requestModels:
+              'application/json': UserRequest
   login:
     handler: UserLogin.lambda_handler
     events:
@@ -43,6 +70,10 @@ functions:
           method: post
           cors: true
           integration: lambda
+          documentation:
+            summary: Login usuario
+            requestModels:
+              'application/json': UserRequest
 
 
 
