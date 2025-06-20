@@ -1,0 +1,69 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Abarrotes | Compras API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/cart/add": {
+      "post": {
+        "summary": "Añadir producto al carrito",
+        "responses": {
+          "200": {
+            "description": "Producto añadido"
+          }
+        }
+      }
+    },
+    "/cart/update": {
+      "put": {
+        "summary": "Actualizar producto en el carrito",
+        "responses": {
+          "200": {
+            "description": "Producto actualizado"
+          }
+        }
+      }
+    },
+    "/cart/delete": {
+      "delete": {
+        "summary": "Eliminar producto del carrito",
+        "responses": {
+          "200": {
+            "description": "Producto eliminado"
+          }
+        }
+      }
+    },
+    "/cart": {
+      "get": {
+        "summary": "Listar productos en el carrito",
+        "responses": {
+          "200": {
+            "description": "Productos en el carrito"
+          }
+        }
+      }
+    },
+    "/cart/complete": {
+      "post": {
+        "summary": "Completar la compra del carrito",
+        "responses": {
+          "200": {
+            "description": "Compra completada"
+          }
+        }
+      }
+    },
+    "/history": {
+      "get": {
+        "summary": "Obtener historial de compras",
+        "responses": {
+          "200": {
+            "description": "Historial de compras"
+          }
+        }
+      }
+    }
+  }
+}
