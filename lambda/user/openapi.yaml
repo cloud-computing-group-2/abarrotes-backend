@@ -1,97 +1,54 @@
-org: salvadordonayre
-service: abarrotes-usuarios
+openapi: 3.0.0
 
-plugins:
-  - serverless-python-requirements
-  - serverless-openapi-documentation
+info:
+  title: Abarrotes Usuarios API
+  version: '1.0.0'
+  description: API para registrar, validar y autenticar usuarios
 
-provider:
-  name: aws
-  runtime: python3.9  # compatible con serverless 3.29
-  timeout: 30
-  region: us-east-1
-  iam:
-    role: arn:aws:iam::107956752347:role/LabRole
+paths:
+  /usuarios/registrar:
+    post:
+      summary: Registrar usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: Usuario registrado con éxito
+  /usuarios/validar:
+    post:
+      summary: Validar usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: Usuario validado con éxito
+  /usuarios/login:
+    post:
+      summary: Login usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: Usuario autenticado con éxito
 
-custom:
-  pythonRequirements:
-    dockerizePip: true
-    layer: false
-    useDownloadCache: false
-    useStaticCache: false
-
-  documentation:
-    apiInfo:
-      version: '1.0.0'
-      title: Abarrotes Usuarios API
-      description: API para registrar, validar y autenticar usuarios
-    models:
-      - name: UserRequest
-        contentType: 'application/json'
-        schema:
-          type: object
-          properties:
-            email:
-              type: string
-            password:
-              type: string
-    endpoints:
-      - path: /usuarios/registrar
-        method: post
-        description: Registrar usuario
-        requestModels:
-          'application/json': UserRequest
-      - path: /usuarios/validar
-        method: post
-        description: Validar usuario
-        requestModels:
-          'application/json': UserRequest
-      - path: /usuarios/login
-        method: post
-        description: Login usuario
-        requestModels:
-          'application/json': UserRequest
-
-functions:
-  registrar:
-    handler: UserCreate.lambda_handler
-    events:
-      - http:
-          path: /usuarios/registrar
-          method: post
-          cors: true
-          integration: lambda
-
-  validar:
-    handler: UserValidar.lambda_handler
-    events:
-      - http:
-          path: /usuarios/validar
-          method: post
-          cors: true
-          integration: lambda
-
-  login:
-    handler: UserLogin.lambda_handler
-    events:
-      - http:
-          path: /usuarios/login
-          method: post
-          cors: true
-          integration: lambda
-
-  swaggerui:
-    handler: swagger.lambda_handler
-    events:
-      - http:
-          path: /docs
-          method: get
-          cors: true
-
-  openapi:
-    handler: swagger.openapi_handler
-    events:
-      - http:
-          path: /openapi.yaml
-          method: get
-          cors: true
+components:
+  schemas:
+    UserRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string

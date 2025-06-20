@@ -7,7 +7,7 @@ plugins:
 
 provider:
   name: aws
-  runtime: python3.11
+  runtime: python3.9
   timeout: 30
   region: us-east-1
   iam:
