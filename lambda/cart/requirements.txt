@@ -1,4 +1,5 @@
 boto3
-Flask
-flask-swagger-ui==5.21.0
+Flask==2.1.1
+werkzeug==2.0.3
+flask-swagger-ui==3.36.0
 serverless-wsgi==1.7.0
