@@ -19,7 +19,7 @@ provider:
 
 functions:
   deployTables:
-    handler: handler.lambda_handler
+    handler: DBSetup.lambda_handler
     events:
       - http:
           path: /crear-tablas
