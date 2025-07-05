@@ -12,6 +12,9 @@ provider:
   region: us-east-1
   iam:
     role: arn:aws:iam::107956752347:role/LabRole
+  environment:
+    TABLE_AUTH: ${self:custom.tableAuth}
+    TABLE_USER: ${self:custom.tableUser}
 
 custom:
   pythonRequirements:
@@ -19,6 +22,8 @@ custom:
     layer: false
     useDownloadCache: false
     useStaticCache: false
+  tableUser: ab_user_${sls:stage}
+  tableAuth: ab_tokens_acceso_${sls:stage}
 
   documentation:
     api:

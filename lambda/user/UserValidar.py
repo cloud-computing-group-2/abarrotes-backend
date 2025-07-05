@@ -1,42 +1,79 @@
 import boto3
-from Utils import load_body
 from datetime import datetime
+import json
+import os
+
+def load_body(event):
+    if 'body' not in event:
+        return event
+
+    if isinstance(event["body"], dict):
+        return event['body']
+    else:
+        return json.loads(event['body'])
 
 def lambda_handler(event, context):
+    """
+    Lambda function to validate token.
+    """
 
-    print(event)
+    print('Event:', event)
 
     body = load_body(event)
 
     token = body.get('token')
     tenant_id = body.get('tenant_id')
 
+    if not token or not tenant_id:
+        return {
+            'statusCode': 403,
+            'body': json.dumps('Missing token or tenant_id')
+        }
+
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('ab_tokens_acceso')
+    table_auth_name = os.environ.get('TABLE_AUTH')
+    table = dynamodb.Table(table_auth_name)
+
     response = table.get_item(
         Key={
             'token': token,
-            "tenant_id": tenant_id
+            'tenant_id': tenant_id
         }
     )
-    if 'Item' not in response or response['Item'].get('tenant_id') != tenant_id:
-        print("error with ", tenant_id, " response: ", response)
+
+    if 'Item' not in response:
+        print('Token not found:', token)
         return {
             'statusCode': 403,
-            'body': 'Token no existe'
+            'body': json.dumps('Token no existe')
         }
-    else:
-        expires = response['Item']['expires']
-        print("expires ", expires)
-        now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        if now > expires:
-            return {
-                'statusCode': 403,
-                'body': 'Token expirado'
-            }
 
-    print("success")
+    item = response['Item']
+    print('Item:', item)
+
+    # Extra check tenant_id
+    if item.get('tenant_id') != tenant_id:
+        print('Mismatch tenant_id:', item.get('tenant_id'))
+        return {
+            'statusCode': 403,
+            'body': json.dumps('Token no corresponde al tenant')
+        }
+
+    expires = item.get('expires_at')
+    print('Token expires at:', expires)
+
+    # Current time in same format
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    if now > expires:
+        print('Token expired:', now)
+        return {
+            'statusCode': 403,
+            'body': json.dumps('Token expirado')
+        }
+
+    print('Token válido')
     return {
         'statusCode': 200,
-        'body': 'Token válido'
+        'body': json.dumps('Token válido')
     }
