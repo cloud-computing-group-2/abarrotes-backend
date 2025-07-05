@@ -98,7 +98,7 @@ functions:
           cors: true
           integration: lambda
   
-  login:
+  logout:
     handler: UserLogout.lambda_handler
     documentation:
       summary: Logout usuario
