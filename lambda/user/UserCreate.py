@@ -1,86 +1,70 @@
+from datetime import timedelta
+
 import boto3
 import bcrypt
+import os
 import json
-from Utils import load_body
 
-# Hashear contraseña
+# Expire time
+expire_time = timedelta(hours=5)
+
+def load_body(event):
+    if 'body' not in event:
+        return event
+
+    if isinstance(event["body"], dict):
+        return event['body']
+    else:
+        return json.loads(event['body'])
+
 def hash_password(password):
-    # Retorna la contraseña hasheada
-    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode('utf-8')
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
-
-# Función que maneja el registro de user y validación del password
 def lambda_handler(event, context):
-    try:
-        body = load_body(event)
-        
-        user_id = body.get('user_id')
-        tenant_id = body.get('tenant_id')
-        if not user_id or not tenant_id:
-            return {
-                "statusCode": 400,
-                "body": "user_id or tenant_id invalid"
-            }
+    table_auth_name = os.environ['TABLE_AUTH']
+    table_user_name = os.environ['TABLE_USER']
 
-        dynamodb = boto3.resource('dynamodb')
-        ab_usuarios = dynamodb.Table('ab_usuarios')
+    body = load_body(event)
 
-        check = ab_usuarios.get_item(
-            Key={
-                'tenant_id': tenant_id,
-                'user_id': user_id
-            }
-        )
-
-        if "Item" in check:
-            mensaje = {
-                'error': 'User ya existe!'
-            }
-            return {
-                'statusCode': 400,
-                'body': mensaje
-            }
-
-        password = body.get('password')
-
-        # Verificar que el email y el password existen
-        if user_id and password and tenant_id:
-            # Hashea la contraseña antes de almacenarla
-            hashed_password = hash_password(password)
-            # Conectar DynamoDB
-            # Almacena los datos del user en la tabla de usuarios en DynamoDB
-            ab_usuarios.put_item(
-                Item={
-                    'user_id': user_id,
-                    'password': hashed_password,
-                    "tenant_id": tenant_id,
-                }
-            )
-            # Retornar un código de estado HTTP 200 (OK) y un mensaje de éxito
-            mensaje = {
-                'message': 'User registered successfully',
-                'user_id': user_id
-            }
-            return {
-                'statusCode': 200,
-                'body': mensaje
-            }
-        else:
-            mensaje = {
-                'error': 'Invalid request body: missing user_id or password or tenant_id'
-            }
-            return {
-                'statusCode': 400,
-                'body': mensaje
-            }
-
-    except Exception as e:
-        # Excepción y retornar un código de error HTTP 500
-        print("Exception:", e)
-        mensaje = {
-            'error': str(e)
-        }
+    user_id = body.get('user_id')
+    tenant_id = body.get('tenant_id')
+    password = body.get('password')
+    if not user_id or not tenant_id or not password:
         return {
-            'statusCode': 500,
-            'body': mensaje
+            'statusCode': 400,
+            'body': 'Missing required parameters: user_id, tenant_id, or password.'
         }
+
+    dynamodb = boto3.resource('dynamodb')
+    table_user = dynamodb.Table(table_user_name)
+    table_auth = dynamodb.Table(table_auth_name)
+
+    # Check if user already exists
+    response = table_user.get_item(
+        Key={
+            'tenant_id': tenant_id,
+            'user_id': user_id
+        }
+    )
+    if 'Item' in response:
+        return {
+            'statusCode': 400,
+            'body': 'User already exists.'
+        }
+
+    # Hash the password
+    hashed_password = hash_password(password)
+    # Register the user
+    table_user.put_item(
+        Item={
+            'tenant_id': tenant_id,
+            'user_id': user_id,
+            'password': hashed_password
+        }
+    )
+
+    # Return success response
+    return {
+        'statusCode': 200,
+        'body': 'User registered successfully.'
+    }
