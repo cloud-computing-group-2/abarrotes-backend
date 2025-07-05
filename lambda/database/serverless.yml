@@ -1,0 +1,27 @@
+org: salvadordonayre
+service: abarrotes-db
+
+frameworkVersion: '3'
+
+custom:
+  stage: ${opt:stage, 'dev'}
+
+provider:
+  name: aws
+  runtime: python3.11
+  region: us-east-1
+  timeout: 30
+  stage: ${self:custom.stage}
+  iam:
+    role: arn:aws:iam::107956752347:role/LabRole
+  environment:
+    STAGE: ${self:custom.stage}
+
+functions:
+  deployTables:
+    handler: handler.lambda_handler
+    events:
+      - http:
+          path: /crear-tablas
+          method: post
+          cors: true

@@ -1,175 +1,89 @@
 import boto3
 import json
-
-users = 'ab_usuarios'
-tokens = 'ab_tokens_acceso'
-products = "ab_productos"
-shopping_1 = "ab_carrito"
-shopping_2 = "ab_historial"
+import os
 
 def lambda_handler(event, context):
     dynamodb = boto3.client('dynamodb')
+    stage = os.environ.get("STAGE", "dev")
+
+    # Tabla prefijada por stage
+    def stage_table(name):
+        return f"{stage}_{name}"
+
     try:
-        dynamodb.create_table(
-            TableName=users,
-            AttributeDefinitions=[
-                # Composite key: tenant_id + user_id
-                {
-                    'AttributeName': 'tenant_id',
-                    'AttributeType': 'S'
-                },
-                {
-                    'AttributeName': 'user_id',
-                    'AttributeType': 'S'
-                }
-            ],
-            KeySchema=[
-                {
-                    'AttributeName': 'tenant_id',
-                    'KeyType': 'HASH'  # Partition Key
-                },
-                {
-                    'AttributeName': 'user_id',
-                    'KeyType': 'RANGE'  # Sort Key
-                }
-            ],
-            BillingMode='PAY_PER_REQUEST',
-            Tags=[
-                {
-                    'Key': 'Environment',
-                    'Value': 'Dev'
-                }
-            ]
-        )
-        dynamodb.create_table(
-            TableName=products,
-            AttributeDefinitions=[
-                {
-                    'AttributeName': 'producto_id',
-                    'AttributeType': 'S'
-                },
-                {
-                    'AttributeName': 'tenant_id',
-                    'AttributeType': 'S'
-                }
-            ],
-            KeySchema=[
-                {
-                    'AttributeName': 'tenant_id',
-                    'KeyType': 'HASH'
-                },
-                {
-                    'AttributeName': 'producto_id',
-                    'KeyType': 'RANGE'
-                }
-            ],
-            BillingMode='PAY_PER_REQUEST',
-            Tags=[
-                {
-                    'Key': 'Environment',
-                    'Value': 'Dev'
-                }
-            ]
-        )
-        dynamodb.create_table(
-            TableName=tokens,
-            AttributeDefinitions=[
-                {
-                    'AttributeName': 'token',
-                    'AttributeType': 'S'
-                },
-                {
-                    'AttributeName': 'tenant_id',
-                    'AttributeType': 'S'
-                }
-            ],
-            KeySchema=[
-                {
-                    'AttributeName': 'token',
-                    'KeyType': 'HASH'
-                },
-                {
-                    'AttributeName': 'tenant_id',
-                    'KeyType': 'RANGE'
-                }
-            ],
-            BillingMode='PAY_PER_REQUEST',
-            Tags=[
-                {
-                    'Key': 'Environment',
-                    'Value': 'Dev'
-                }
-            ]
-        )
-        dynamodb.create_table(
-            TableName=shopping_1,
-            AttributeDefinitions=[
-                {
-                    'AttributeName': 'tenant_id',
-                    'AttributeType': 'S'
-                },
-                {
-                    'AttributeName': 'user_id',
-                    'AttributeType': 'S'
-                }
-            ],
-            KeySchema=[
-                {
-                    'AttributeName': 'tenant_id',
-                    'KeyType': 'HASH'
-                },
-                {
-                    'AttributeName': 'user_id',
-                    'KeyType': 'RANGE'
-                }
-            ],
-            BillingMode='PAY_PER_REQUEST',
-            Tags=[
-                {
-                    'Key': 'Environment',
-                    'Value': 'Dev'
-                }
-            ]
-        )
-        dynamodb.create_table(
-            TableName=shopping_2,
-            AttributeDefinitions=[
-                {
-                    'AttributeName': 'tenant_id',
-                    'AttributeType': 'S'
-                },
-                {
-                    'AttributeName': 'compra_id',
-                    'AttributeType': 'S'
-                }
-            ],
-            KeySchema=[
-                {
-                    'AttributeName': 'tenant_id',
-                    'KeyType': 'HASH'
-                },
-                {
-                    'AttributeName': 'compra_id',
-                    'KeyType': 'RANGE'
-                }
-            ],
-            BillingMode='PAY_PER_REQUEST',
-            Tags=[
-                {
-                    'Key': 'Environment',
-                    'Value': 'Dev'
-                }
-            ]
-        )
-        return {
-            'statusCode': 200,
-            'body': json.dumps(f'Tablas creadas exitosamente.')
+        # Lista de tablas
+        tables = {
+            'ab_usuarios': {
+                'AttributeDefinitions': [
+                    {'AttributeName': 'tenant_id', 'AttributeType': 'S'},
+                    {'AttributeName': 'user_id', 'AttributeType': 'S'}
+                ],
+                'KeySchema': [
+                    {'AttributeName': 'tenant_id', 'KeyType': 'HASH'},
+                    {'AttributeName': 'user_id', 'KeyType': 'RANGE'}
+                ]
+            },
+            'ab_tokens_acceso': {
+                'AttributeDefinitions': [
+                    {'AttributeName': 'token', 'AttributeType': 'S'},
+                    {'AttributeName': 'tenant_id', 'AttributeType': 'S'}
+                ],
+                'KeySchema': [
+                    {'AttributeName': 'token', 'KeyType': 'HASH'},
+                    {'AttributeName': 'tenant_id', 'KeyType': 'RANGE'}
+                ]
+            },
+            'ab_productos': {
+                'AttributeDefinitions': [
+                    {'AttributeName': 'tenant_id', 'AttributeType': 'S'},
+                    {'AttributeName': 'producto_id', 'AttributeType': 'S'}
+                ],
+                'KeySchema': [
+                    {'AttributeName': 'tenant_id', 'KeyType': 'HASH'},
+                    {'AttributeName': 'producto_id', 'KeyType': 'RANGE'}
+                ]
+            },
+            'ab_carrito': {
+                'AttributeDefinitions': [
+                    {'AttributeName': 'tenant_id', 'AttributeType': 'S'},
+                    {'AttributeName': 'user_id', 'AttributeType': 'S'}
+                ],
+                'KeySchema': [
+                    {'AttributeName': 'tenant_id', 'KeyType': 'HASH'},
+                    {'AttributeName': 'user_id', 'KeyType': 'RANGE'}
+                ]
+            },
+            'ab_historial': {
+                'AttributeDefinitions': [
+                    {'AttributeName': 'tenant_id', 'AttributeType': 'S'},
+                    {'AttributeName': 'compra_id', 'AttributeType': 'S'}
+                ],
+                'KeySchema': [
+                    {'AttributeName': 'tenant_id', 'KeyType': 'HASH'},
+                    {'AttributeName': 'compra_id', 'KeyType': 'RANGE'}
+                ]
+            }
         }
 
-    except dynamodb.exceptions.ResourceInUseException:
+        created = []
+
+        for name, config in tables.items():
+            table_name = stage_table(name)
+            try:
+                dynamodb.create_table(
+                    TableName=table_name,
+                    AttributeDefinitions=config['AttributeDefinitions'],
+                    KeySchema=config['KeySchema'],
+                    BillingMode='PAY_PER_REQUEST',
+                    Tags=[{'Key': 'Environment', 'Value': stage}]
+                )
+                created.append(table_name)
+            except dynamodb.exceptions.ResourceInUseException:
+                pass  # ya existe
+
         return {
-            'statusCode': 409,
-            'body': json.dumps(f'Las tablas ya existen.')
+            'statusCode': 200,
+            'body': json.dumps(f'Tablas creadas o ya existentes: {created}')
         }
 
     except Exception as e:
