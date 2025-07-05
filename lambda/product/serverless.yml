@@ -1,6 +1,9 @@
 org: salvadordonayre
 service: abarrotes-productos
 
+plugins:
+  - serverless-aws-documentation
+
 custom:
   stage: ${opt:stage, 'dev'}
   documentation:
@@ -31,12 +34,9 @@ custom:
               type: integer
               description: "Cantidad en stock"
 
-plugins:
-  - serverless-aws-documentation
-
 provider:
   name: aws
-  runtime: nodejs18.x  # te recomiendo usar nodejs18.x compatible con serverless 3.29
+  runtime: nodejs18.x
   timeout: 30
   stage: ${self:custom.stage}
   iam:
@@ -46,7 +46,7 @@ provider:
 
 functions:
   crear:
-    handler: ProductCreate.handler
+    handler: handlers/ProductCreate.handler
     documentation:
       summary: Crear producto
       requestModels:
@@ -56,10 +56,9 @@ functions:
           path: /productos/crear
           method: post
           cors: true
-          integration: lambda
 
   buscar:
-    handler: ProductGet.handler
+    handler: handlers/ProductGet.handler
     documentation:
       summary: Buscar producto
     events:
@@ -67,10 +66,9 @@ functions:
           path: /productos/buscar
           method: get
           cors: true
-          integration: lambda
 
   listar:
-    handler: ProductList.handler
+    handler: handlers/ProductList.handler
     documentation:
       summary: Listar productos
     events:
@@ -78,10 +76,9 @@ functions:
           path: /productos/listar
           method: get
           cors: true
-          integration: lambda
 
   modificar:
-    handler: ProductModify.handler
+    handler: handlers/ProductModify.handler
     documentation:
       summary: Modificar producto
       requestModels:
@@ -91,10 +88,9 @@ functions:
           path: /productos/modificar
           method: patch
           cors: true
-          integration: lambda
 
   eliminar:
-    handler: ProductDelete.handler
+    handler: handlers/ProductDelete.handler
     documentation:
       summary: Eliminar producto
       requestModels:
@@ -104,10 +100,9 @@ functions:
           path: /productos/eliminar
           method: delete
           cors: true
-          integration: lambda
 
   swaggerui:
-    handler: swagger.lambda_handler
+    handler: handlers/swagger.lambda_handler
     events:
       - http:
           path: /docs
@@ -115,7 +110,7 @@ functions:
           cors: true
 
   openapi:
-    handler: swagger.openapi_handler
+    handler: handlers/swagger.openapi_handler
     events:
       - http:
           path: /openapi.yaml

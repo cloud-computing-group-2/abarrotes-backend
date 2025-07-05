@@ -1,9 +1,8 @@
-openapi: 3.0.3
+openapi: 3.0.0
 info:
   title: Abarrotes Productos API
-  version: '1.0.0'
+  version: "1.0.0"
   description: API para crear, buscar, listar, modificar y eliminar productos
-
 paths:
   /productos/crear:
     post:
@@ -17,27 +16,18 @@ paths:
       responses:
         '200':
           description: Producto creado con éxito
-
   /productos/buscar:
     get:
       summary: Buscar producto
-      parameters:
-        - in: query
-          name: producto_id
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: Producto encontrado
-
   /productos/listar:
     get:
       summary: Listar productos
       responses:
         '200':
-          description: Productos listados con éxito
-
+          description: Lista de productos
   /productos/modificar:
     patch:
       summary: Modificar producto
@@ -49,8 +39,7 @@ paths:
               $ref: '#/components/schemas/ProductRequest'
       responses:
         '200':
-          description: Producto modificado con éxito
-
+          description: Producto modificado
   /productos/eliminar:
     delete:
       summary: Eliminar producto
@@ -62,8 +51,7 @@ paths:
               $ref: '#/components/schemas/ProductRequest'
       responses:
         '200':
-          description: Producto eliminado con éxito
-
+          description: Producto eliminado
 components:
   schemas:
     ProductRequest:
