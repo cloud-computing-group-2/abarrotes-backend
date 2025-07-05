@@ -1,5 +1,7 @@
-org: salvadordonayre
 service: abarrotes-productos
+org: salvadordonayre
+
+configValidationMode: off  # 👈 importante para permitir 'documentation' en funciones
 
 plugins:
   - serverless-aws-documentation
@@ -7,10 +9,11 @@ plugins:
 custom:
   stage: ${opt:stage, 'dev'}
   documentation:
-    apiInfo:
-      version: '1.0.0'
-      title: Abarrotes Productos API
-      description: API para crear, buscar, listar, modificar y eliminar productos
+    api:
+      info:
+        version: '1.0.0'
+        title: Abarrotes Productos API
+        description: API para crear, buscar, listar, modificar y eliminar productos
     models:
       - name: ProductRequest
         contentType: 'application/json'
@@ -46,9 +49,10 @@ provider:
 
 functions:
   crear:
-    handler: handlers/ProductCreate.handler
+    handler: ProductCreate.handler
     documentation:
       summary: Crear producto
+      description: Crea un nuevo producto
       requestModels:
         'application/json': ProductRequest
     events:
@@ -58,9 +62,10 @@ functions:
           cors: true
 
   buscar:
-    handler: handlers/ProductGet.handler
+    handler: ProductGet.handler
     documentation:
       summary: Buscar producto
+      description: Buscar un producto por ID
     events:
       - http:
           path: /productos/buscar
@@ -68,9 +73,10 @@ functions:
           cors: true
 
   listar:
-    handler: handlers/ProductList.handler
+    handler: ProductList.handler
     documentation:
       summary: Listar productos
+      description: Lista todos los productos disponibles
     events:
       - http:
           path: /productos/listar
@@ -78,9 +84,10 @@ functions:
           cors: true
 
   modificar:
-    handler: handlers/ProductModify.handler
+    handler: ProductModify.handler
     documentation:
       summary: Modificar producto
+      description: Modifica un producto existente
       requestModels:
         'application/json': ProductRequest
     events:
@@ -90,9 +97,10 @@ functions:
           cors: true
 
   eliminar:
-    handler: handlers/ProductDelete.handler
+    handler: ProductDelete.handler
     documentation:
       summary: Eliminar producto
+      description: Elimina un producto del sistema
       requestModels:
         'application/json': ProductRequest
     events:
@@ -102,7 +110,7 @@ functions:
           cors: true
 
   swaggerui:
-    handler: handlers/swagger.lambda_handler
+    handler: swagger.lambda_handler
     events:
       - http:
           path: /docs
@@ -110,7 +118,7 @@ functions:
           cors: true
 
   openapi:
-    handler: handlers/swagger.openapi_handler
+    handler: swagger.openapi_handler
     events:
       - http:
           path: /openapi.yaml

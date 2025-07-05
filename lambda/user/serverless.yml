@@ -1,8 +1,6 @@
 org: salvadordonayre
 service: abarrotes-usuarios
 
-configValidationMode: off
-
 plugins:
   - serverless-python-requirements
   - serverless-aws-documentation
