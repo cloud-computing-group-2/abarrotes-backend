@@ -15,7 +15,7 @@ module.exports.lambda_handler = async () => {
     <script>
       window.onload = () => {
         SwaggerUIBundle({
-          url: '/dev/openapi.yaml',
+          url: 'openapi.yaml',
           dom_id: '#swagger-ui',
         });
       };
@@ -34,7 +34,7 @@ module.exports.lambda_handler = async () => {
 };
 
 module.exports.openapi_handler = async () => {
-  const filePath = path.join(__dirname, '../openapi.yaml');
+  const filePath = path.join(__dirname, 'openapi.yaml');
   try {
     const content = fs.readFileSync(filePath, 'utf8');
     return {
