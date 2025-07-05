@@ -1,0 +1,87 @@
+openapi: 3.0.3
+info:
+  title: Abarrotes Productos API
+  version: '1.0.0'
+  description: API para crear, buscar, listar, modificar y eliminar productos
+
+paths:
+  /productos/crear:
+    post:
+      summary: Crear producto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        '200':
+          description: Producto creado con éxito
+
+  /productos/buscar:
+    get:
+      summary: Buscar producto
+      parameters:
+        - in: query
+          name: producto_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Producto encontrado
+
+  /productos/listar:
+    get:
+      summary: Listar productos
+      responses:
+        '200':
+          description: Productos listados con éxito
+
+  /productos/modificar:
+    patch:
+      summary: Modificar producto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        '200':
+          description: Producto modificado con éxito
+
+  /productos/eliminar:
+    delete:
+      summary: Eliminar producto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductRequest'
+      responses:
+        '200':
+          description: Producto eliminado con éxito
+
+components:
+  schemas:
+    ProductRequest:
+      type: object
+      properties:
+        producto_id:
+          type: string
+          description: ID único del producto
+        tenant_id:
+          type: string
+          description: ID del tenant
+        nombre:
+          type: string
+          description: Nombre del producto
+        precio:
+          type: number
+          format: float
+          description: Precio del producto
+        stock:
+          type: integer
+          description: Cantidad en stock

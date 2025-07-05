@@ -32,7 +32,7 @@ custom:
               description: "Cantidad en stock"
 
 plugins:
-  - serverless-openapi-documentation
+  - serverless-aws-documentation
 
 provider:
   name: aws
