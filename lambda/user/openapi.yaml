@@ -6,6 +6,12 @@ info:
   description: API para registrar, validar y autenticar usuarios
 
 paths:
+  /usuarios/logout:
+    post:
+      summary: Logout usuario
+      responses:
+        '200':
+          description: Sesión cerrada
   /usuarios/registrar:
     post:
       summary: Registrar usuario

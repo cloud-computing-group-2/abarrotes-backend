@@ -97,6 +97,19 @@ functions:
           method: post
           cors: true
           integration: lambda
+  
+  login:
+    handler: UserLogout.lambda_handler
+    documentation:
+      summary: Logout usuario
+      requestModels:
+        'application/json': UserRequest
+    events:
+      - http:
+          path: /usuarios/logout
+          method: post
+          cors: true
+          integration: lambda
 
   swaggerui:
     handler: swagger.lambda_handler
