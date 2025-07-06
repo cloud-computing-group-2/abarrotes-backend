@@ -34,12 +34,15 @@ def lambda_handler(event, context):
     table_auth_name = os.environ.get('TABLE_AUTH')
     table = dynamodb.Table(table_auth_name)
 
-    response = table.get_item(
-        Key={
+    args = {
             'token': token,
             'tenant_id': tenant_id
         }
+    print(args)
+    response = table.get_item(
+        Key=args
     )
+    print("token response:", response)
 
     if 'Item' not in response:
         print('Token not found:', token)
