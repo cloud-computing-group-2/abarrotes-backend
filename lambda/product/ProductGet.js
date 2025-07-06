@@ -32,10 +32,10 @@ exports.handler = async (event) => {
         producto_id
       }
     };
-    print("params:", params)
+    console.log("params:", params)
 
     const result = await dynamo.get(params).promise();
-    print("result:", result)
+    console.log("result:", result)
 
     if (!result.Item) {
       return {
