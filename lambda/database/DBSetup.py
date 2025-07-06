@@ -12,63 +12,58 @@ def lambda_handler(event, context):
 
     try:
         # Lista de tablas
-        tables = [
-            {
-                'name': 'ab_usuarios',
-                'attrs': [
+        tables = {
+            'ab_usuarios': {
+                'AttributeDefinitions': [
                     {'AttributeName': 'tenant_id', 'AttributeType': 'S'},
-                    {'AttributeName': 'user_id', 'AttributeType': 'S'},
+                    {'AttributeName': 'user_id', 'AttributeType': 'S'}
                 ],
-                'key': [
+                'KeySchema': [
                     {'AttributeName': 'tenant_id', 'KeyType': 'HASH'},
-                    {'AttributeName': 'user_id', 'KeyType': 'RANGE'},
+                    {'AttributeName': 'user_id', 'KeyType': 'RANGE'}
                 ]
             },
-            {
-                'name': 'ab_tokens_acceso',
-                'attrs': [
+            'ab_tokens_acceso': {
+                'AttributeDefinitions': [
                     {'AttributeName': 'token', 'AttributeType': 'S'},
-                    {'AttributeName': 'tenant_id', 'AttributeType': 'S'},
+                    {'AttributeName': 'tenant_id', 'AttributeType': 'S'}
                 ],
-                'key': [
+                'KeySchema': [
                     {'AttributeName': 'token', 'KeyType': 'HASH'},
-                 {'AttributeName': 'tenant_id', 'KeyType': 'RANGE'},
-              ]
-         },
-         {
-                'name': 'ab_productos',
-                'attrs': [
-                    {'AttributeName': 'tenant_id', 'AttributeType': 'S'},
-                    {'AttributeName': 'producto_id', 'AttributeType': 'S'},
-                ],
-                'key': [
-                    {'AttributeName': 'tenant_id', 'KeyType': 'HASH'},
-                    {'AttributeName': 'producto_id', 'KeyType': 'RANGE'},
+                    {'AttributeName': 'tenant_id', 'KeyType': 'RANGE'}
                 ]
             },
-            {
-                'name': 'ab_carrito',
-                'attrs': [
+            'ab_productos': {
+                'AttributeDefinitions': [
                     {'AttributeName': 'tenant_id', 'AttributeType': 'S'},
-                    {'AttributeName': 'user_id', 'AttributeType': 'S'},
+                    {'AttributeName': 'producto_id', 'AttributeType': 'S'}
                 ],
-                'key': [
+                'KeySchema': [
                     {'AttributeName': 'tenant_id', 'KeyType': 'HASH'},
-                    {'AttributeName': 'user_id', 'KeyType': 'RANGE'},
+                    {'AttributeName': 'producto_id', 'KeyType': 'RANGE'}
                 ]
             },
-            {
-                'name': 'ab_carrito_historial',
-                'attrs': [
+            'ab_carrito': {
+                'AttributeDefinitions': [
                     {'AttributeName': 'tenant_id', 'AttributeType': 'S'},
-                    {'AttributeName': 'compra_id', 'AttributeType': 'S'},
+                    {'AttributeName': 'user_id', 'AttributeType': 'S'}
                 ],
-                'key': [
+                'KeySchema': [
                     {'AttributeName': 'tenant_id', 'KeyType': 'HASH'},
-                    {'AttributeName': 'compra_id', 'KeyType': 'RANGE'},
+                    {'AttributeName': 'user_id', 'KeyType': 'RANGE'}
                 ]
             },
-        ]
+            'ab_carrito_historial': {
+                'AttributeDefinitions': [
+                    {'AttributeName': 'tenant_id', 'AttributeType': 'S'},
+                    {'AttributeName': 'compra_id', 'AttributeType': 'S'}
+                ],
+                'KeySchema': [
+                    {'AttributeName': 'tenant_id', 'KeyType': 'HASH'},
+                    {'AttributeName': 'compra_id', 'KeyType': 'RANGE'}
+                ]
+            }
+        }
 
         created = []
 
