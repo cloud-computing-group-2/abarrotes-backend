@@ -10,6 +10,9 @@ custom:
   stage: ${opt:stage, 'dev'}
   tableUser: ${sls:stage}_ab_usuarios
   tableAuth: ${sls:stage}_ab_tokens_acceso
+  tableProductos: ${sls:stage}_ab_productos
+  tableCarrito: ${sls:stage}_ab_carrito
+  tableCarritoHistorial: ${sls:stage}_ab_carrito
   documentation:
     api:
       info:
@@ -48,7 +51,11 @@ provider:
     role: arn:aws:iam::107956752347:role/LabRole
   environment:
     STAGE: ${self:custom.stage}
-    
+    TABLE_AUTH: ${self:custom.tableAuth}
+    TABLE_USER: ${self:custom.tableUser}
+    TABLE_PRODUCTOS: ${self:custom.tableAuth}
+    TABLE_CARRITO: ${self:custom.tableUser}
+    TABLE_CARRITO_HISTORIAL: ${self:custom.tableUser}
 
 functions:
   crear:
