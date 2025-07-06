@@ -21,6 +21,7 @@ exports.handler = async (event) => {
     if (!tenant_id) {
       throw new Error("Falta tenant_id en query");
     }
+    console.log(tenant_id, token)
 
     // Validar token
     await validateToken(token, tenant_id);
