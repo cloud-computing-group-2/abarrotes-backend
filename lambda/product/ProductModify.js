@@ -1,51 +1,69 @@
 const AWS = require('aws-sdk');
-const { v4: uuidv4 } = require('uuid');
 const { validateToken } = require('./auth.js');
 
 const dynamo = new AWS.DynamoDB.DocumentClient();
-const tableName = 'ab_productos';
 
 exports.handler = async (event) => {
   try {
-    const token = event.headers.Authorization || event.headers.authorization
-    body = typeof event.body === 'string' ? JSON.parse(event.body) : event.body
+    const tableName = process.env.TABLE_PRODUCTOS;
+    if (!tableName) throw new Error("Variable TABLE_PRODUCTOS no definida");
+
+    const rawAuth = event.headers?.Authorization || event.headers?.authorization;
+    if (!rawAuth || !rawAuth.startsWith("Bearer ")) {
+      throw new Error("Token Authorization Bearer no proporcionado");
+    }
+    const token = rawAuth.replace("Bearer ", "").trim();
+
+    const body = typeof event.body === 'string' ? JSON.parse(event.body) : event.body;
     const { tenant_id, producto_id, ...updates } = body;
-    await validateToken(token, tenant_id);
 
-    let expr = "set";
-    let names = {};
-    let values = {};
-    let prefix = " ";
-    for (var k in updates) {
-        const attrName  = `#${k}`
-        const attrValue = `:${k}`
-
-        expr += `${prefix}{attrName} = {attrValue}`
-        names[attrName] = k
-        names[attrValue] = attrValue
-
-        prefix = ', ';
+    if (!tenant_id || !producto_id) {
+      throw new Error("Faltan campos obligatorios: tenant_id y producto_id");
     }
 
-    const params = {
-        TableName: tableName,
-        Key: {
-          tenant_id,
-          producto_id
-        },
-        UpdateExpression: expr,
-        ExpressionAttributesNames: names,
-        ExpressionAttributesValues: values,
-        ReturnValues: 'ALL_NEW',
-      };
+    // Validar token
+    await validateToken(token, tenant_id);
 
-    await dynamo.update(params).promise();
+    // Armar UpdateExpression
+    let expr = "SET ";
+    const names = {};
+    const values = {};
+    let first = true;
+
+    for (const k in updates) {
+      const attrName = `#${k}`;
+      const attrValue = `:${k}`;
+
+      if (!first) expr += ", ";
+      expr += `${attrName} = ${attrValue}`;
+      names[attrName] = k;
+      values[attrValue] = updates[k];
+      first = false;
+    }
+
+    if (first) throw new Error("No se proporcionaron campos para modificar");
+
+    const params = {
+      TableName: tableName,
+      Key: {
+        tenant_id,
+        producto_id
+      },
+      UpdateExpression: expr,
+      ExpressionAttributeNames: names,
+      ExpressionAttributeValues: values,
+      ReturnValues: 'ALL_NEW'
+    };
+
+    const result = await dynamo.update(params).promise();
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Producto eliminado:' + producto_id })
+      body: JSON.stringify({ message: 'Producto modificado con éxito', item: result.Attributes })
     };
+
   } catch (err) {
+    console.error("Error al modificar producto:", err);
     return {
       statusCode: 400,
       body: JSON.stringify({ error: err.message })
