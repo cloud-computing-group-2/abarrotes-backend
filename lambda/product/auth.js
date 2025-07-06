@@ -15,6 +15,8 @@ async function validateToken(token, tenant_id) {
     })
   };
 
+  console.log("payload:", payload)
+
   const params = {
     FunctionName: `abarrotes-usuarios-${ENV}-validar`,
     InvocationType: "RequestResponse",
