@@ -36,6 +36,7 @@ def lambda_handler(event, context):
         }
 
     dynamodb = boto3.resource('dynamodb')
+    print("tables", [table_user_name, table_auth_name])
     table_user = dynamodb.Table(table_user_name)
     table_auth = dynamodb.Table(table_auth_name)
 
