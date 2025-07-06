@@ -8,6 +8,8 @@ plugins:
 
 custom:
   stage: ${opt:stage, 'dev'}
+  tableUser: ${sls:stage}_ab_usuarios
+  tableAuth: ${sls:stage}_ab_tokens_acceso
   documentation:
     api:
       info:
@@ -46,6 +48,7 @@ provider:
     role: arn:aws:iam::107956752347:role/LabRole
   environment:
     STAGE: ${self:custom.stage}
+    
 
 functions:
   crear:
