@@ -53,9 +53,9 @@ provider:
     STAGE: ${self:custom.stage}
     TABLE_AUTH: ${self:custom.tableAuth}
     TABLE_USER: ${self:custom.tableUser}
-    TABLE_PRODUCTOS: ${self:custom.tableAuth}
-    TABLE_CARRITO: ${self:custom.tableUser}
-    TABLE_CARRITO_HISTORIAL: ${self:custom.tableUser}
+    TABLE_PRODUCTOS: ${self:custom.tableProductos}
+    TABLE_CARRITO: ${self:custom.tableCarrito}
+    TABLE_CARRITO_HISTORIAL: ${self:custom.tableCarritoHistorial}
 
 functions:
   crear:
