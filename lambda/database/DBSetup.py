@@ -83,7 +83,7 @@ def lambda_handler(event, context):
 
         return {
             'statusCode': 200,
-            'body': json.dumps(f'Tablas creadas o ya existentes: {created}')
+            'body': json.dumps(f'Tablas nuevas: {created}')
         }
 
     except Exception as e:
