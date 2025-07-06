@@ -20,6 +20,9 @@ exports.handler = async (event) => {
     if (!tenant_id || !producto_id) {
       throw new Error("Faltan tenant_id o producto_id en query");
     }
+    console.log(tenant_id, producto_id)
+    console.log(typeof(tenant_id))
+    console.log(typeof(producto_id))
 
     // Validar token
     await validateToken(token, tenant_id);
