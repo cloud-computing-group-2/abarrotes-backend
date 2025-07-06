@@ -22,8 +22,8 @@ custom:
     layer: false
     useDownloadCache: false
     useStaticCache: false
-  tableUser: ab_usuarios_${sls:stage}
-  tableAuth: ab_tokens_acceso_${sls:stage}
+  tableUser: ${sls:stage}_ab_usuarios
+  tableAuth: ${sls:stage}_ab_tokens_acceso
 
   documentation:
     api:
