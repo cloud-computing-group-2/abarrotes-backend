@@ -22,7 +22,7 @@ custom:
     layer: false
     useDownloadCache: false
     useStaticCache: false
-  tableUser: ab_user_${sls:stage}
+  tableUser: ab_usuarios_${sls:stage}
   tableAuth: ab_tokens_acceso_${sls:stage}
 
   documentation:
