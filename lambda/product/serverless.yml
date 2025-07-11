@@ -143,8 +143,8 @@ functions:
         'application/json': ProductRequest
     events:
       - http:
-          path: /productos/eliminar
-          method: delete
+          path: /productos/buscar
+          method: get
           cors: true
 
   swaggerui:
