@@ -5,7 +5,13 @@ const ES_ENDPOINT = process.env.ES_ENDPOINT;
 const STAGE = process.env.STAGE;
 const INDEX = `${STAGE}_ab_productos`;
 
-const client = new Client({ node: ES_ENDPOINT });
+// Cliente se conecta por HTTP sin SSL
+const client = new Client({
+  node: ES_ENDPOINT,
+  ssl: {
+    rejectUnauthorized: false  // no necesario si usas HTTP, pero no hace daño
+  }
+});
 
 exports.handler = async (event) => {
   try {

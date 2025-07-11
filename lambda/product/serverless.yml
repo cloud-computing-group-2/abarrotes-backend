@@ -8,6 +8,7 @@ plugins:
 
 custom:
   stage: ${opt:stage, 'dev'}
+  esEndpoint: http://34.224.18.242:9200
   tableUser: ${sls:stage}_ab_usuarios
   tableAuth: ${sls:stage}_ab_tokens_acceso
   tableProductos: ${sls:stage}_ab_productos
@@ -51,6 +52,7 @@ provider:
     role: arn:aws:iam::107956752347:role/LabRole
   environment:
     STAGE: ${self:custom.stage}
+    ES_ENDPOINT: ${self:custom.esEndpoint}
     TABLE_AUTH: ${self:custom.tableAuth}
     TABLE_USER: ${self:custom.tableUser}
     TABLE_PRODUCTOS: ${self:custom.tableProductos}
@@ -71,14 +73,14 @@ functions:
           method: post
           cors: true
 
-  buscar:
+  get:
     handler: ProductGet.handler
     documentation:
       summary: Buscar producto
       description: Buscar un producto por ID
     events:
       - http:
-          path: /productos/buscar
+          path: /productos/get
           method: get
           cors: true
 
@@ -105,6 +107,19 @@ functions:
           path: /productos/modificar
           method: patch
           cors: true
+
+  buscar:
+    handler: ProductSearch.handler
+    documentation:
+      summary: Buscar un producto en ElasticSearch
+      description: Buscar un producto en ElasticSearch
+      requestModels:
+        'application/json': ProductRequest
+    events:
+      - http:
+          path: /productos/buscar
+          method: get
+          cors: true  
 
   eliminar:
     handler: ProductDelete.handler
