@@ -133,6 +133,19 @@ functions:
           path: /productos/eliminar
           method: delete
           cors: true
+  
+  buscar:
+    handler: ProductSearch.handler
+    documentation:
+      summary: Buscar producto
+      description: Buscar un producto del sistema
+      requestModels:
+        'application/json': ProductRequest
+    events:
+      - http:
+          path: /productos/eliminar
+          method: delete
+          cors: true
 
   swaggerui:
     handler: swagger.lambda_handler
