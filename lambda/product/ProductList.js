@@ -14,7 +14,7 @@ exports.handler = async (event) => {
     }
     const token = rawAuth.replace("Bearer ", "").trim();
 
-    const tenant_id = event.queryStringParameters?.tenant_id;
+    const tenant_id = (event.queryStringParameters?.tenant_id || '').trim();
     const limit = parseInt(event.queryStringParameters?.limit) || 10;
     const nextToken = event.queryStringParameters?.nextToken;
 
@@ -38,9 +38,22 @@ exports.handler = async (event) => {
     if (nextToken) {
       params.ExclusiveStartKey = JSON.parse(Buffer.from(nextToken, 'base64').toString('utf8'));
     }
-
-    const result = await dynamo.query(params).promise();
-
+    // Al parecer esto da nada
+    //const result = await dynamo.query(params).promise();
+    const scanParams = {
+      TableName: tableName,
+      FilterExpression: 'tenant_id = :tid',
+      ExpressionAttributeValues: {
+        ':tid': tenant_id
+      },
+      Limit: limit
+    };
+    const result = await dynamo.scan(scanParams).promise();
+    
+    console.log(result)
+    
+    
+    
     const response = {
       items: result.Items,
       nextToken: result.LastEvaluatedKey
@@ -49,7 +62,11 @@ exports.handler = async (event) => {
     };
 
     return {
-      statusCode: 200,
+      statusCode: 200,headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+        'Access-Control-Allow-Methods': 'GET,OPTIONS'
+      },
       body: JSON.stringify(response)
     };
 
@@ -57,6 +74,11 @@ exports.handler = async (event) => {
     console.error("Error al listar productos:", err);
     return {
       statusCode: 400,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+        'Access-Control-Allow-Methods': 'GET,OPTIONS'
+      },
       body: JSON.stringify({ error: err.message })
     };
   }

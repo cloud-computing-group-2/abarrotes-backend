@@ -1,0 +1,37 @@
+service: abarrotes-streams
+org: salvadordonayre
+
+plugins:
+  - serverless-aws-documentation
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  timeout: 30
+  stage: ${self:custom.stage}
+  iam:
+    role: arn:aws:iam::107956752347:role/LabRole
+  environment:
+    STAGE: ${self:custom.stage}
+    ES_ENDPOINT: ${self:custom.esEndpoint}
+    TABLE_AUTH: ${self:custom.tableAuth}
+    TABLE_USER: ${self:custom.tableUser}
+    TABLE_PRODUCTOS: ${self:custom.tableProductos}
+    TABLE_CARRITO: ${self:custom.tableCarrito}
+    TABLE_CARRITO_HISTORIAL: ${self:custom.tableCarritoHistorial}
+
+functions:
+  syncToElastic:
+    handler: sync.handler
+    environment:
+      ES_ENDPOINT: ${self:custom.esEndpoint}
+      INDEX_NAME: ${self:custom.stage}_ab_productos
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - ProductosTable
+              - StreamArn
+          batchSize: 5
+          startingPosition: LATEST
