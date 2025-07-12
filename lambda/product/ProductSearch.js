@@ -5,11 +5,10 @@ const ES_ENDPOINT = process.env.ES_ENDPOINT;
 const STAGE = process.env.STAGE;
 const INDEX = `${STAGE}_ab_productos`;
 
-// Cliente se conecta por HTTP sin SSL
 const client = new Client({
   node: ES_ENDPOINT,
   ssl: {
-    rejectUnauthorized: false  // no necesario si usas HTTP, pero no hace daño
+    rejectUnauthorized: false
   }
 });
 
@@ -22,32 +21,33 @@ exports.handler = async (event) => {
     const token = rawAuth.replace("Bearer ", "").trim();
 
     const query = event.queryStringParameters || {};
-    const tenant_id = query.tenant_id;
-    const search = query.search;
+    const { tenant_id, ...searchParams } = query;
 
-    if (!tenant_id || !search) {
-      throw new Error("Faltan tenant_id o search");
+    if (!tenant_id || Object.keys(searchParams).length === 0) {
+      throw new Error("Faltan tenant_id o parámetros de búsqueda");
     }
 
     await validateToken(token, tenant_id);
-    console.log("endpoint:", ES_ENDPOINT)
+
+    const mustConditions = [{ match: { tenant_id } }];
+
+    for (const [field, value] of Object.entries(searchParams)) {
+      mustConditions.push({
+        match: {
+          [field]: {
+            query: value,
+            fuzziness: isNaN(value) ? "AUTO" : 0  // Fuzziness solo para strings
+          }
+        }
+      });
+    }
 
     const result = await client.search({
       index: INDEX,
       body: {
         query: {
           bool: {
-            must: [
-              { match: { tenant_id } },
-              {
-                match: {
-                  nombre: {
-                    query: search,
-                    fuzziness: "AUTO"
-                  }
-                }
-              }
-            ]
+            must: mustConditions
           }
         }
       }
