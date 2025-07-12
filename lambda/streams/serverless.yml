@@ -31,7 +31,7 @@ custom:
   arnProductos: arn:aws:dynamodb:us-east-1:107956752347:table/dev_ab_productos/stream/2025-07-09T15:11:59.272
 
 functions:
-  product-insert:
+  product-insert: 
     handler: ProductInsert.handler
     environment:
       ES_ENDPOINT: ${self:custom.esEndpoint}
