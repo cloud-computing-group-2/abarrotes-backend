@@ -28,7 +28,7 @@ custom:
   tableProductos: ${sls:stage}_ab_productos
   tableCarrito: ${sls:stage}_ab_carrito
   tableCarritoHistorial: ${sls:stage}_ab_carrito
-  flowProductos: 2025-07-09T15:11:59.272
+  arnProductos: arn:aws:dynamodb:us-east-1:107956752347:table/dev_ab_productos/stream/2025-07-09T15:11:59.272
 
 functions:
   product-insert:
@@ -39,6 +39,6 @@ functions:
     events:
       - stream:
           type: dynamodb
-          arn: arn:aws:dynamodb:us-east-1:107956752347:table/${self:custom.tableProductos}/stream/${self:custom.flowProductos}
+          arn: ${self:custom.arnProductos}
           batchSize: 5
           startingPosition: LATEST
