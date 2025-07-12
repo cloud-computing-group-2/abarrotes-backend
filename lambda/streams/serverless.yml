@@ -21,8 +21,8 @@ provider:
     TABLE_CARRITO_HISTORIAL: ${self:custom.tableCarritoHistorial}
 
 functions:
-  syncToElastic:
-    handler: sync.handler
+  product-insert:
+    handler: ProductInsert.handler
     environment:
       ES_ENDPOINT: ${self:custom.esEndpoint}
       INDEX_NAME: ${self:custom.stage}_ab_productos
