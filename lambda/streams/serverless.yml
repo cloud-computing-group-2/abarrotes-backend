@@ -20,6 +20,15 @@ provider:
     TABLE_CARRITO: ${self:custom.tableCarrito}
     TABLE_CARRITO_HISTORIAL: ${self:custom.tableCarritoHistorial}
 
+custom:
+  stage: ${opt:stage, 'dev'}
+  esEndpoint: http://34.224.18.242:9200
+  tableUser: ${sls:stage}_ab_usuarios
+  tableAuth: ${sls:stage}_ab_tokens_acceso
+  tableProductos: ${sls:stage}_ab_productos
+  tableCarrito: ${sls:stage}_ab_carrito
+  tableCarritoHistorial: ${sls:stage}_ab_carrito
+
 functions:
   product-insert:
     handler: ProductInsert.handler
