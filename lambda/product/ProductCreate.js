@@ -27,6 +27,21 @@ exports.handler = async (event) => {
     // Validar token
     await validateToken(token, tenant_id);
 
+    const existing = await dynamo.scan({
+      TableName: tableName,
+      FilterExpression: 'tenant_id = :t AND nombre = :n',
+      ExpressionAttributeValues: {
+        ':t': tenant_id,
+        ':n': nombre
+      },
+      Limit: 1
+    }).promise();
+
+    if (existing.Items.length > 0) {
+      throw new Error("Ya existe un producto con ese nombre en este tenant");
+    }
+
+
     // Insertar producto
     const producto_id = uuidv4();
     const item = {
@@ -37,11 +52,10 @@ exports.handler = async (event) => {
       stock
     };
 
-  await dynamo.put({
-    TableName: tableName,
-    Item: item,
-    ConditionExpression: 'attribute_not_exists(producto_id)'
-  }).promise();
+    await dynamo.put({
+      TableName: tableName,
+      Item: item
+    }).promise();
 
 
     return {
