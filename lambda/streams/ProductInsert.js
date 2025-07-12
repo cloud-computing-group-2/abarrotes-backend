@@ -1,4 +1,5 @@
 const { Client } = require('@opensearch-project/opensearch');
+const AWS = require('aws-sdk');
 
 const ES_ENDPOINT = process.env.ES_ENDPOINT;
 const INDEX_NAME = process.env.INDEX_NAME;
