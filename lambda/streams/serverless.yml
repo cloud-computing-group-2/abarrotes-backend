@@ -21,6 +21,7 @@ provider:
     TABLE_CARRITO_HISTORIAL: ${self:custom.tableCarritoHistorial}
 
 custom:
+  unused: "XD"
   stage: ${opt:stage, 'dev'}
   esEndpoint: http://3.90.86.225:9200
   tableUser: ${sls:stage}_ab_usuarios
