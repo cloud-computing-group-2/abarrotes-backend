@@ -39,6 +39,6 @@ functions:
     events:
       - stream:
           type: dynamodb
-          arn: arn:aws:dynamodb:us-east-1:107956752347:table/${self:custom.tableProductos}/stream/${flowProductos}
+          arn: arn:aws:dynamodb:us-east-1:107956752347:table/${self:custom.tableProductos}/stream/${self:custom.flowProductos}
           batchSize: 5
           startingPosition: LATEST
