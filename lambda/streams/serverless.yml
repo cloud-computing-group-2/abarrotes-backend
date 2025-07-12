@@ -40,7 +40,6 @@ functions:
           type: dynamodb
           arn:
             Fn::GetAtt:
-              - ProductosTable
               - StreamArn
           batchSize: 5
           startingPosition: LATEST
