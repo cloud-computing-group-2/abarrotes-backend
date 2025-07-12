@@ -30,6 +30,7 @@ exports.handler = async (event) => {
     }
 
     await validateToken(token, tenant_id);
+    console.log("endpoint:", ES_ENDPOINT)
 
     const result = await client.search({
       index: INDEX,
