@@ -37,10 +37,12 @@ exports.handler = async (event) => {
       stock
     };
 
-    await dynamo.put({
-      TableName: tableName,
-      Item: item
-    }).promise();
+  await dynamo.put({
+    TableName: tableName,
+    Item: item,
+    ConditionExpression: 'attribute_not_exists(producto_id)'
+  }).promise();
+
 
     return {
       statusCode: 200,
