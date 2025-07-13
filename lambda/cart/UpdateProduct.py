@@ -54,6 +54,9 @@ def lambda_handler(event, context):
     product_id = body["product_id"]
     amount = body["amount"]
 
+    print("boDY")
+    print(amount)
+
     # encontrando la información del producto
     
     info_prod = producto.get_item(
@@ -63,13 +66,15 @@ def lambda_handler(event, context):
         }
     )
 
-    print("Información del producto:")
-    print(info_prod)
+    
 
     info = info_prod['Item']
     nombre = info['nombre']
     precio = info['precio']
     stock = info['stock']
+
+    print("Información del producto:")
+    print(info)
 
     # encontrando el carrito del usuario
 
@@ -83,30 +88,28 @@ def lambda_handler(event, context):
     new_stock = stock 
     # buscando el producto en el carrito
 
-    products = response['Item']['products']
+    products = response['Item']['products'] # tengo todo el carrito
     curr_total_price = response['Item']['total_price']
 
     # Buscar el producto en la lista de productos
     product_found = False
     for product in products:
         if product['product_id'] == product_id:
-            curr_amount = product['amount']
+            curr_amount = product['amount'] # cant actual del carrito del producto
             if(curr_amount >= amount):
                 product['amount'] = amount
                 product['price'] = Decimal(precio*amount) 
                 new_stock = stock + (curr_amount - amount)  # Actualizar el stock
-            else:
+            else: # lo que pido ahora es mayor
                 if(amount - curr_amount <= stock):
                     product['amount'] = amount
                     product['price'] = Decimal(precio*amount)   
                     new_stock = stock - (amount - curr_amount)
                 else:
-                    return {
-                        'statusCode': 400,
-                        'body': json.dumps({
-                            'message': f"No hay suficiente stock para el producto. Stock disponible: {stock}, cantidad solicitada: {amount}"
-                        })
-                    }
+                    return cors_response(400, {
+                        'message': f"No hay suficiente stock para el producto. Stock disponible: {stock}, cantidad solicitada: {amount}"
+                    })
+
             product_found = True
             break
 
@@ -140,7 +143,8 @@ def lambda_handler(event, context):
     else:
         print(f"Producto con ID {product_id} no encontrado en el carrito.")
 
-
+    print("Nuevo stock del producto:")
+    print(new_stock)
 
     update_response = producto.update_item(
         Key={
