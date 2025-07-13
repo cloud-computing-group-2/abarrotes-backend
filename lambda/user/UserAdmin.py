@@ -21,7 +21,7 @@ def lambda_handler(event, context):
     if not token or not tenant_id:
         return {
             'statusCode': 403,
-            'body': json.dumps('Missing token or tenant_id')
+            'body': 'Missing token or tenant_id'
         }
 
     dynamodb = boto3.resource('dynamodb')
@@ -40,7 +40,7 @@ def lambda_handler(event, context):
     if 'Item' not in auth_response:
         return {
             'statusCode': 403,
-            'body': json.dumps('Token no existe')
+            'body': 'Token no existe'
         }
 
     item = auth_response['Item']
@@ -51,7 +51,7 @@ def lambda_handler(event, context):
     if item.get('tenant_id') != tenant_id:
         return {
             'statusCode': 403,
-            'body': json.dumps('Token no corresponde al tenant')
+            'body': 'Token no corresponde al tenant'
         }
 
     # Validar expiración
@@ -59,7 +59,7 @@ def lambda_handler(event, context):
     if now > expires:
         return {
             'statusCode': 403,
-            'body': json.dumps('Token expirado')
+            'body': 'Token expirado'
         }
 
     # Obtener usuario
@@ -74,22 +74,22 @@ def lambda_handler(event, context):
     if 'Item' not in user_response:
         return {
             'statusCode': 403,
-            'body': json.dumps('Usuario no encontrado')
+            'body': 'Usuario no encontrado'
         }
 
     rol = user_response['Item'].get('rol')
     if rol != 'ADMIN':
         return {
             'statusCode': 403,
-            'body': json.dumps('Acceso restringido a administradores')
+            'body': "Acceso restringido a administradores"
         }
 
     # Validación exitosa
     return {
         'statusCode': 200,
-        'body': json.dumps({
+        'body': {
             'message': 'Token válido y usuario administrador',
             'user_id': user_id,
             'rol': rol
-        })
+        }
     }
