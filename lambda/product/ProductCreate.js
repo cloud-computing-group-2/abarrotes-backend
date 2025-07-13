@@ -28,6 +28,7 @@ exports.handler = async (event) => {
     await validateToken(token, tenant_id);
     // Validar admin
     check = await validateAdmin(token, tenant_id);
+    console.log(check)
     if (!check.success) {
       return check;
     }
