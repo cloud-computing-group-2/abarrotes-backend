@@ -15,7 +15,7 @@ def cors_response(status_code, body_dict):
         'headers': {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-            'Access-Control-Allow-Methods': 'OPTIONS,POST,PUT'
+            'Access-Control-Allow-Methods': 'OPTIONS,GET,POST,PUT,DELETE'
         },
         'body': json.dumps(body_dict)
     }
