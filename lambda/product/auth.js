@@ -35,7 +35,11 @@ async function validateToken(token, tenant_id) {
 
 async function validateAdmin(token, tenant_id) {
   if (!token || !tenant_id) {
-    throw new Error('Token inválido o expirado');
+    return {
+      success: false,
+      statusCode: 403,
+      error: 'Token o tenant_id faltante'
+    };
   }
 
   const payload = {
@@ -52,23 +56,35 @@ async function validateAdmin(token, tenant_id) {
     const res = await lambda.invoke(params).promise();
     const result = JSON.parse(res.Payload);
 
-    if (result.statusCode !== 200) {
-      throw new Error('Acceso restringido');
+    // Parsear el body de la respuesta
+    let message;
+    try {
+      const parsed = JSON.parse(result.body);
+      message = typeof parsed === 'string' ? parsed : parsed.error || parsed.message;
+    } catch (e) {
+      message = result.body; // body sin parsear
     }
 
-    // Parsear el body si está presente
-    const resultBody = typeof result.body === 'string'
-      ? JSON.parse(result.body)
-      : result.body;
+    if (result.statusCode !== 200) {
+      return {
+        success: false,
+        statusCode: result.statusCode,
+        error: message || 'Acceso restringido'
+      };
+    }
 
     return {
       success: true,
-      user_id: resultBody.user_id,
-      rol: resultBody.rol
+      user_id: message?.user_id, // por si el mensaje incluye esto
+      rol: message?.rol
     };
   } catch (err) {
     console.error("validateAdmin error:", err);
-    throw new Error('Error al validar admin');
+    return {
+      success: false,
+      statusCode: 403,
+      error: 'Error al validar admin'
+    };
   }
 }
 
