@@ -80,11 +80,7 @@ async function validateAdmin(token, tenant_id) {
     };
   } catch (err) {
     console.error("validateAdmin error:", err);
-    return {
-      success: false,
-      statusCode: 403,
-      error: 'Error al validar admin'
-    };
+    throw new Error("Accesso restringido") // fuck handling errors
   }
 }
 
