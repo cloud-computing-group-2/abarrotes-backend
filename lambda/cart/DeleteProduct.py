@@ -8,7 +8,8 @@ import os
 stage = os.environ.get('stage')
 table_cart = os.environ.get('TABLE_CART', 'dev-t-carrito')
 user_validar = f"abarrotes-usuarios-{stage}-validar"
-table_products = "ab_productos"
+table_products = f"{stage}_ab_productos"
+
 
 def cors_response(status_code, body_dict):
     return {

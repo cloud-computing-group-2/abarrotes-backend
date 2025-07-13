@@ -6,7 +6,7 @@ import os
 stage = os.environ.get('stage')
 table_cart = os.environ.get('TABLE_CART', 'dev-t-carrito')
 user_validar = f"abarrotes-usuarios-{stage}-validar"
-table_products = "ab_productos"
+table_products = f"{stage}_ab_productos"
 
 def cors_response(status_code, body_dict):
     return {
@@ -14,7 +14,7 @@ def cors_response(status_code, body_dict):
         'headers': {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-            'Access-Control-Allow-Methods': 'OPTIONS,POST,PUT'
+            'Access-Control-Allow-Methods': 'OPTIONS,GET,POST,PUT,DELETE'
         },
         'body': json.dumps(body_dict)
     }
