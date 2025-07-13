@@ -27,7 +27,10 @@ exports.handler = async (event) => {
     // Validar token
     await validateToken(token, tenant_id);
     // Validar admin
-    await validateAdmin(token, tenant_id);
+    let check = await validateAdmin(token, tenant_id);
+    if (!check.success) {
+      return check;
+    }
 
     const existing = await dynamo.scan({
       TableName: tableName,
@@ -51,7 +54,7 @@ exports.handler = async (event) => {
       tenant_id,
       nombre,
       precio,
-      stock
+      stock 
     };
 
     await dynamo.put({
