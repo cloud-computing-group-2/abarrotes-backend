@@ -1,5 +1,2 @@
 boto3
-Flask==2.1.1
-werkzeug==1.0.1
-flask-swagger-ui==3.36.0
-serverless-wsgi==1.7.0
+

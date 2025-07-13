@@ -8,9 +8,7 @@ custom:
   pythonRequirements:
     dockerizePip: true
     layer: false
-  wsgi:
-    app: SwaggerHandler.app
-    packRequirements: false
+  
 
 provider:
   name: aws
@@ -71,19 +69,6 @@ functions:
     events:
       - http:
           path: /history
-          method: get
-          cors: true
-          integration: lambda-proxy
-  swagger:
-    handler: SwaggerHandler.lambda_handler
-    events:
-      - http:
-          path: /swagger
-          method: get
-          cors: true
-          integration: lambda-proxy
-      - http:
-          path: /swagger.json
           method: get
           cors: true
           integration: lambda-proxy
