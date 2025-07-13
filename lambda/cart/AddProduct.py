@@ -12,6 +12,17 @@ user_validar = f"abarrotes-usuarios-{stage}-validar"
 print(f"User validation function: {user_validar}")
 table_products = "ab_productos"
 
+def cors_response(status_code, body_dict):
+    return {
+        'statusCode': status_code,
+        'headers': {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,PUT'
+        },
+        'body': json.dumps(body_dict)
+    }
+
 def lambda_handler(event, context):
 
     print(event)
@@ -33,11 +44,7 @@ def lambda_handler(event, context):
     response = json.loads(invoke_response['Payload'].read())
     print(response)
     if response['statusCode'] == 403:
-        return {
-            'statusCode' : 403,
-            'status' : 'Forbidden - Acceso No Autorizado'
-        }
-
+        return cors_response(403, {'message': 'Forbidden - Acceso No Autorizado'})
 
     # Acceso a la BD
     dynamodb = boto3.resource('dynamodb')
@@ -66,12 +73,9 @@ def lambda_handler(event, context):
     # verificamos el stock del producto en la tabla producto
 
     if stock <= 0 or stock < amount:
-        return {
-            'statusCode': 400,
-            'body': json.dumps({
-                'message': f"No hay suficiente stock para el producto. Stock disponible: {stock}, cantidad solicitada: {amount}"
-            })
-        }
+        return cors_response(400, {
+            'message': f"No hay suficiente stock para el producto. Stock disponible: {stock}, cantidad solicitada: {amount}"
+        })
 
     new_stock = stock - amount
 
@@ -156,11 +160,7 @@ def lambda_handler(event, context):
 
         print("Respuesta de la creación del carrito:", response)
 
-    return {
-            'statusCode': 200,
-            'body': json.dumps({
-                'message': 'Ítem insertado correctamente.',
-#                'response': response  
-            })
-        }
+    return cors_response(200, {'message': 'Ítem insertado correctamente.'})
+
+
 

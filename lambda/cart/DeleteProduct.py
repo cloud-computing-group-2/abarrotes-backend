@@ -10,6 +10,17 @@ table_cart = os.environ.get('TABLE_CART', 'dev-t-carrito')
 user_validar = f"abarrotes-usuarios-{stage}-validar"
 table_products = "ab_productos"
 
+def cors_response(status_code, body_dict):
+    return {
+        'statusCode': status_code,
+        'headers': {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Headers': 'Content-Type,Authorization',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,PUT'
+        },
+        'body': json.dumps(body_dict)
+    }
+
 def lambda_handler(event, context):
 
     print(event)
@@ -31,10 +42,8 @@ def lambda_handler(event, context):
     response = json.loads(invoke_response['Payload'].read())
     print(response)
     if response['statusCode'] == 403:
-        return {
-            'statusCode' : 403,
-            'status' : 'Forbidden - Acceso No Autorizado'
-        }
+        return cors_response(403, {'message': 'Forbidden - Acceso No Autorizado'})
+
 
 
     # Acceso a la BD
@@ -132,11 +141,9 @@ def lambda_handler(event, context):
         )
     
     
-    return {
-            'statusCode': 200,
-            'body': json.dumps({
-                'message': 'Ítem actualizado correctamente.',
-#                'response': response  
-            })
-        }
+    return cors_response(200, {
+        'message': 'Ítem actualizado correctamente.'
+        'response': response 
+    })
+
 
