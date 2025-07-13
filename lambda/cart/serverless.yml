@@ -32,12 +32,22 @@ functions:
           method: post
           cors: true
           integration: lambda-proxy
+      - http:
+          path: /cart/add
+          method: options
+          cors: true
+          integration: lambda-proxy
   actualizar:
     handler: UpdateProduct.lambda_handler
     events:
       - http:
           path: /cart/update
           method: put
+          cors: true
+          integration: lambda-proxy
+      - http:
+          path: /cart/update
+          method: options
           cors: true
           integration: lambda-proxy 
   eliminar:
@@ -48,6 +58,11 @@ functions:
           method: delete
           cors: true
           integration: lambda-proxy 
+      - http:
+          path: /cart/update
+          method: options
+          cors: true
+          integration: lambda-proxy
   listar:
     handler: GetCart.lambda_handler
     events:
@@ -56,6 +71,12 @@ functions:
           method: get
           cors: true
           integration: lambda-proxy
+      - http:
+          path: /cart
+          method: options
+          cors: true
+          integration: lambda-proxy
+      
   confirm:
     handler: CompletePurchase.lambda_handler
     events:
@@ -64,12 +85,22 @@ functions:
           method: post
           cors: true
           integration: lambda-proxy
+      - http:
+          path: /cart/complete
+          method: options
+          cors: true
+          integration: lambda-proxy
   historial:
     handler: GetHistory.lambda_handler
     events:
       - http:
           path: /history
           method: get
+          cors: true
+          integration: lambda-proxy
+      - http:
+          path: /history
+          method: options
           cors: true
           integration: lambda-proxy
     

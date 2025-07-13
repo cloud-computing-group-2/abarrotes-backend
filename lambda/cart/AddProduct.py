@@ -25,6 +25,9 @@ def cors_response(status_code, body_dict):
 
 def lambda_handler(event, context):
 
+    if event['httpMethod'] == 'OPTIONS':
+        return cors_response(200, {'message': 'CORS preflight OK'})
+    
     print(event)
     # Entrada (json)
     body =  json.loads(event['body'])
