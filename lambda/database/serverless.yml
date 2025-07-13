@@ -8,7 +8,7 @@ custom:
 
 provider:
   name: aws
-  runtime: python3.11
+  runtime: python3.10
   region: us-east-1
   timeout: 30
   stage: ${self:custom.stage}
