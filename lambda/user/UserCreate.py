@@ -36,7 +36,6 @@ def lambda_handler(event, context):
         }
 
     dynamodb = boto3.resource('dynamodb')
-    print("tables", [table_user_name, table_auth_name])
     table_user = dynamodb.Table(table_user_name)
     table_auth = dynamodb.Table(table_auth_name)
 
@@ -60,7 +59,8 @@ def lambda_handler(event, context):
         Item={
             'tenant_id': tenant_id,
             'user_id': user_id,
-            'password': hashed_password
+            'password': hashed_password,
+            'rol': "USER"
         }
     )
 
