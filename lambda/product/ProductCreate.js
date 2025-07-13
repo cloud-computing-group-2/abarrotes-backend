@@ -27,11 +27,7 @@ exports.handler = async (event) => {
     // Validar token
     await validateToken(token, tenant_id);
     // Validar admin
-    check = await validateAdmin(token, tenant_id);
-    console.log(check)
-    if (!check.success) {
-      return check;
-    }
+    await validateAdmin(token, tenant_id);
 
     const existing = await dynamo.scan({
       TableName: tableName,
