@@ -1,0 +1,187 @@
+openapi: 3.0.0
+
+info:
+  title: Abarrotes Compras API
+  version: '1.0.0'
+  description: API para gestionar el carrito de compras y el historial
+
+paths:
+  /cart/add:
+    post:
+      summary: Añadir producto al carrito
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartItem'
+      responses:
+        '200':
+          description: Producto añadido al carrito con éxito
+    options:
+      summary: Preflight para CORS
+      responses:
+        '200':
+          description: OK
+
+  /cart/update:
+    put:
+      summary: Actualizar producto del carrito
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CartItemUpdate'
+      responses:
+        '200':
+          description: Producto actualizado con éxito
+    options:
+      summary: Preflight para CORS
+      responses:
+        '200':
+          description: OK
+
+  /cart/delete:
+    delete:
+      summary: Eliminar producto del carrito
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteCartItem'
+      responses:
+        '200':
+          description: Producto eliminado con éxito
+    options:
+      summary: Preflight para CORS
+      responses:
+        '200':
+          description: OK
+
+  /cart:
+    get:
+      summary: Listar productos del carrito
+      parameters:
+        - name: tenant_id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista del carrito obtenida con éxito
+    options:
+      summary: Preflight para CORS
+      responses:
+        '200':
+          description: OK
+
+  /cart/complete:
+    post:
+      summary: Confirmar compra
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompletePurchase'
+      responses:
+        '200':
+          description: Compra realizada con éxito
+    options:
+      summary: Preflight para CORS
+      responses:
+        '200':
+          description: OK
+
+  /history:
+    get:
+      summary: Obtener historial de compras
+      parameters:
+        - name: tenant_id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: user_id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Historial obtenido con éxito
+    options:
+      summary: Preflight para CORS
+      responses:
+        '200':
+          description: OK
+
+components:
+  schemas:
+    CartItem:
+      type: object
+      required:
+        - tenant_id
+        - user_id
+        - producto_id
+        - cantidad
+      properties:
+        tenant_id:
+          type: string
+        user_id:
+          type: string
+        producto_id:
+          type: string
+        cantidad:
+          type: integer
+          minimum: 1
+
+    CartItemUpdate:
+      type: object
+      required:
+        - tenant_id
+        - user_id
+        - producto_id
+        - cantidad
+      properties:
+        tenant_id:
+          type: string
+        user_id:
+          type: string
+        producto_id:
+          type: string
+        cantidad:
+          type: integer
+
+    DeleteCartItem:
+      type: object
+      required:
+        - tenant_id
+        - user_id
+        - producto_id
+      properties:
+        tenant_id:
+          type: string
+        user_id:
+          type: string
+        producto_id:
+          type: string
+
+    CompletePurchase:
+      type: object
+      required:
+        - tenant_id
+        - user_id
+      properties:
+        tenant_id:
+          type: string
+        user_id:
+          type: string

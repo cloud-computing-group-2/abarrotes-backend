@@ -3,12 +3,7 @@ service: abarrotes-compras
 
 plugins:
   - serverless-python-requirements
-
-custom:
-  pythonRequirements:
-    dockerizePip: true
-    layer: false
-  
+  - serverless-aws-documentation
 
 provider:
   name: aws
@@ -22,10 +17,99 @@ provider:
     stage: ${self:provider.stage}
     TABLE_NAME: ${self:provider.stage}-t-carrito
 
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    layer: false
+    useDownloadCache: false
+    useStaticCache: false
+  documentation:
+    api:
+      info:
+        version: '1.0.0'
+        title: Abarrotes Compras API
+        description: API para gestionar el carrito de compras y el historial de compras
+    models:
+      - name: CartItem
+        contentType: 'application/json'
+        schema:
+          type: object
+          required:
+            - tenant_id
+            - user_id
+            - producto_id
+            - cantidad
+          properties:
+            tenant_id:
+              type: string
+              description: "ID del tenant (nombre del establecimiento)"
+            user_id:
+              type: string
+              description: "ID del usuario que agrega el producto"
+            producto_id:
+              type: string
+              description: "ID único del producto"
+            cantidad:
+              type: integer
+              description: "Cantidad del producto a agregar al carrito"
+            
+      - name: UpdateCartItem
+        contentType: 'application/json'
+        schema:
+          type: object
+          required:
+            - tenant_id
+            - user_id
+            - producto_id
+            - cantidad
+          properties:
+            tenant_id:
+              type: string
+              description: "ID del tenant (nombre del establecimiento)"
+            user_id:
+              type: string
+              description: "ID del usuario que actualiza el carrito"
+            producto_id:
+              type: string
+              description: "ID del producto a actualizar"
+            cantidad:
+              type: integer
+              description: "Nueva cantidad para el producto (puede ser 0 para eliminar)"
+
+      - name: DeleteCartItem
+        contentType: 'application/json'
+        schema:
+          type: object
+          properties:
+            tenant_id:
+              type: string
+            user_id:
+              type: string
+
+      - name: CompletePurchaseRequest
+        contentType: 'application/json'
+        schema:
+          type: object
+          required:
+            - tenant_id
+            - user_id
+          properties:
+            tenant_id:
+              type: string
+              description: "ID del tenant (nombre del establecimiento)"
+            user_id:
+              type: string
+              description: "ID del usuario que completa la compra"
+            
+
 
 functions:
   anadir:
     handler: AddProduct.lambda_handler
+    documentation:
+      summary: Añadir producto al carrito
+      requestModels:
+        'application/json': CartItem
     events:
       - http:
           path: /cart/add
@@ -39,6 +123,10 @@ functions:
           integration: lambda-proxy
   actualizar:
     handler: UpdateProduct.lambda_handler
+    documentation:
+      summary: Actualizar producto en el carrito
+      requestModels:
+        'application/json': UpdateCartItem
     events:
       - http:
           path: /cart/update
@@ -52,6 +140,10 @@ functions:
           integration: lambda-proxy 
   eliminar:
     handler: DeleteProduct.lambda_handler
+    documentation:
+      summary: Eliminar producto del carrito
+      requestModels:
+        'application/json': DeleteCartItem
     events:
       - http:
           path: /cart/delete
@@ -59,12 +151,15 @@ functions:
           cors: true
           integration: lambda-proxy 
       - http:
-          path: /cart/update
+          path: /cart/delete
           method: options
           cors: true
           integration: lambda-proxy
   listar:
     handler: GetCart.lambda_handler
+    documentation:
+      summary: Listar productos del carrito
+      description: Lista todos los productos en el carrito del usuario
     events:
       - http:
           path: /cart
@@ -79,6 +174,11 @@ functions:
       
   confirm:
     handler: CompletePurchase.lambda_handler
+    documentation:
+      summary: Completar compra
+      description: Completa la compra del carrito y guarda el historial
+      requestModels:
+        'application/json': CompletePurchaseRequest
     events:
       - http:
           path: /cart/complete
@@ -92,6 +192,9 @@ functions:
           integration: lambda-proxy
   historial:
     handler: GetHistory.lambda_handler
+    documentation:
+      summary: Obtener historial de compras
+      description: Obtiene el historial de compras del usuario
     events:
       - http:
           path: /history
@@ -103,7 +206,20 @@ functions:
           method: options
           cors: true
           integration: lambda-proxy
-    
+  swaggerui:
+    handler: swagger.lambda_handler
+    events:
+      - http:
+          path: /docs
+          method: get
+          cors: true
+  openapi:
+    handler: swagger.openapi_handler
+    events:
+      - http:
+          path: /openapi.yaml
+          method: get
+          cors: true
 
 resources:
   Resources:
