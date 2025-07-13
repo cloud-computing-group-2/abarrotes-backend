@@ -27,10 +27,14 @@ exports.handler = async (event) => {
     // Validar token
     await validateToken(token, tenant_id);
     // Validar admin
-    let check = await validateAdmin(token, tenant_id);
-    if (!check.success) {
-      return check;
+    const c = await validateAdmin(token, tenant_id);
+    if (!c.success) {
+      return {
+        statusCode: c.statusCode || 403,
+        body: JSON.stringify({ error: c.error || 'Acceso denegado' })
+      };
     }
+
 
     const existing = await dynamo.scan({
       TableName: tableName,
