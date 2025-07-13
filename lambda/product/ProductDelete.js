@@ -25,6 +25,14 @@ exports.handler = async (event) => {
 
     // Validar token
     await validateToken(token, tenant_id);
+    // Validar admin
+    const c = await validateAdmin(token, tenant_id);
+    if (!c.success) {
+      return {
+        statusCode: c.statusCode || 403,
+        body: JSON.stringify({ error: c.error || 'Acceso denegado' })
+      };
+    }
 
     // Eliminar el producto
     const params = {
