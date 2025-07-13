@@ -70,6 +70,23 @@ def lambda_handler(event, context):
             'body': json.dumps({'error': 'Wrong password.'})
         }
 
+    rol = response["Item"].get("rol")
+    if not rol:
+        # Asignar rol por defecto y actualizar en la tabla
+        rol = "USER"
+        table_user.update_item(
+            Key={
+                'tenant_id': tenant_id,
+                'user_id': user_id
+            },
+            UpdateExpression='SET #r = :r',
+            ExpressionAttributeNames={
+                '#r': 'rol'
+            },
+            ExpressionAttributeValues={
+                ':r': rol
+            }
+        )
     # Create an auth token
     token = generate_token()
     expiration_time = (datetime.now() + expire_time).isoformat()

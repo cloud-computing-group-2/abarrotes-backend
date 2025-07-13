@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk');
 const { v4: uuidv4 } = require('uuid');
-const { validateToken } = require('./auth.js');
+const { validateToken, validateAdmin } = require('./auth.js');
 
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
@@ -26,6 +26,8 @@ exports.handler = async (event) => {
 
     // Validar token
     await validateToken(token, tenant_id);
+    // Validar admin
+    await validateAdmin(token, tenant_id);
 
     const existing = await dynamo.scan({
       TableName: tableName,

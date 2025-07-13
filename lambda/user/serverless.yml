@@ -84,6 +84,19 @@ functions:
           method: post
           cors: true
           integration: lambda
+  
+  admin:
+    handler: UserAdmin.lambda_handler
+    documentation:
+      summary: Validar admin
+      requestModels:
+        'application/json': UserRequest
+    events:
+      - http:
+          path: /usuarios/admin
+          method: post
+          cors: true
+          integration: lambda
 
   login:
     handler: UserLogin.lambda_handler
