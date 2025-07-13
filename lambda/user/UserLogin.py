@@ -105,7 +105,8 @@ def lambda_handler(event, context):
         'statusCode': 200,
         'body':{
             'token': token,
-            'expires_at': expiration_time
+            'expires_at': expiration_time,
+            'rol': rol
         },
         'headers': {
             'Content-Type': 'application/json',
