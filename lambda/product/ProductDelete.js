@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const { validateToken } = require('./auth.js');
+const { validateToken, validateAdmin } = require('./auth.js');
 
 const dynamo = new AWS.DynamoDB.DocumentClient();
 

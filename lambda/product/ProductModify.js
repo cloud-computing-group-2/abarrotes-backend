@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const { validateToken } = require('./auth.js');
+const { validateToken, validateAdmin } = require('./auth.js');
 
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
@@ -31,7 +31,7 @@ exports.handler = async (event) => {
         body: JSON.stringify({ error: c.error || 'Acceso denegado' })
       };
     }
-    
+
     // Armar UpdateExpression
     let expr = "SET ";
     const names = {};
