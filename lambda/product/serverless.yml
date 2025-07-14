@@ -109,16 +109,15 @@ functions:
             methods:
               - PATCH
               - OPTIONS
-
-    - http:
-        path: /productos/modificar
-        method: options
-        integration: mock
-        cors:
-          origin: '*'
-          headers:
-            - Content-Type
-            - Authorization
+      - http:
+          path: /productos/modificar
+          method: options
+          integration: mock
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
 
 
   buscar:
