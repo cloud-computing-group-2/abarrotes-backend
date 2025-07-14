@@ -8,7 +8,7 @@ plugins:
 
 custom:
   stage: ${opt:stage, 'dev'}
-  esEndpoint: http://3.90.86.225:9200
+  esEndpoint: http://3.88.191.240:9200
   tableUser: ${sls:stage}_ab_usuarios
   tableAuth: ${sls:stage}_ab_tokens_acceso
   tableProductos: ${sls:stage}_ab_productos
