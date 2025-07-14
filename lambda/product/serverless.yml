@@ -96,17 +96,30 @@ functions:
           cors: true
 
   modificar:
-    handler: ProductModify.handler
-    documentation:
-      summary: Modificar producto
-      description: Modifica un producto existente
-      requestModels:
-        'application/json': ProductRequest
-    events:
-      - http:
-          path: /productos/modificar
-          method: patch
-          cors: true
+  handler: ProductModify.handler
+  events:
+    - http:
+        path: /productos/modificar
+        method: patch
+        cors:
+          origin: '*'
+          headers:
+            - Content-Type
+            - Authorization
+          methods:
+            - PATCH
+            - OPTIONS
+
+    - http:
+        path: /productos/modificar
+        method: options
+        integration: mock
+        cors:
+          origin: '*'
+          headers:
+            - Content-Type
+            - Authorization
+
 
   buscar:
     handler: ProductSearch.handler
