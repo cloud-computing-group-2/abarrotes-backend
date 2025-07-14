@@ -96,19 +96,19 @@ functions:
           cors: true
 
   modificar:
-  handler: ProductModify.handler
-  events:
-    - http:
-        path: /productos/modificar
-        method: patch
-        cors:
-          origin: '*'
-          headers:
-            - Content-Type
-            - Authorization
-          methods:
-            - PATCH
-            - OPTIONS
+    handler: ProductModify.handler
+    events:
+      - http:
+          path: /productos/modificar
+          method: patch
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            methods:
+              - PATCH
+              - OPTIONS
 
     - http:
         path: /productos/modificar
