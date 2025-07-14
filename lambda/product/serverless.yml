@@ -132,7 +132,27 @@ functions:
       - http:
           path: /productos/eliminar
           method: delete
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            methods:
+              - DELETE
+              - OPTIONS
+      - http:
+          path: /productos/eliminar
+          method: options
+          integration: mock
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            methods:
+              - DELETE
+              - OPTIONS
+
 
   swaggerui:
     handler: swagger.lambda_handler

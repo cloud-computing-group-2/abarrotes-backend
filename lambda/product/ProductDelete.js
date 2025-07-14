@@ -30,7 +30,12 @@ exports.handler = async (event) => {
     if (!c.success) {
       return {
         statusCode: c.statusCode || 403,
-        body: JSON.stringify({ error: c.error || 'Acceso denegado' })
+        body: JSON.stringify({ error: c.error || 'Acceso denegado' }),
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*',
+          'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+        }
       };
     }
 
@@ -47,14 +52,27 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Producto eliminado', producto_id })
-    };
+      body: JSON.stringify({ message: 'Producto eliminado' }),
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+      }
+    }
+    
+  
 
   } catch (err) {
     console.error("Error al eliminar producto:", err);
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: err.message })
+      body: JSON.stringify({ error: err.message }),
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+      }
     };
+    
   }
 };

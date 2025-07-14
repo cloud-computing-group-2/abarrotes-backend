@@ -43,20 +43,35 @@ exports.handler = async (event) => {
     if (!result.Item) {
       return {
         statusCode: 404,
-        body: JSON.stringify({ message: "Producto no encontrado" })
+        body: JSON.stringify({ message: "Producto no encontrado" }),
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*',
+          'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+        }
       };
     }
 
     return {
       statusCode: 200,
-      body: JSON.stringify(result.Item)
+      body: JSON.stringify(result.Item),
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+      }
     };
 
   } catch (err) {
     console.error("Error al buscar producto:", err);
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: err.message })
+      body: JSON.stringify({ error: err.message }),
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': '*',
+        'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+      }
     };
   }
 };
