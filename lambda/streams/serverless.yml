@@ -23,13 +23,13 @@ provider:
 custom:
   unused: "XD"
   stage: ${opt:stage, 'dev'}
-  esEndpoint: http://3.88.191.240:9200
+  esEndpoint: http://3.95.184.197 :9200
   tableUser: ${sls:stage}_ab_usuarios
   tableAuth: ${sls:stage}_ab_tokens_acceso
   tableProductos: ${sls:stage}_ab_productos
   tableCarrito: ${sls:stage}_ab_carrito
   tableCarritoHistorial: ${sls:stage}_ab_carrito
-  arnProductos: arn:aws:dynamodb:us-east-1:107956752347:table/dev_ab_productos/stream/2025-07-09T15:11:59.272
+  arnProductos: arn:aws:dynamodb:us-east-1:250853414258:table/dev_ab_productos/stream/2025-07-13T20:58:12.144
 
 functions:
   product-insert: 
