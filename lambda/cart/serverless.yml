@@ -171,7 +171,21 @@ functions:
           method: options
           cors: true
           integration: lambda-proxy
-      
+  obtener:
+    handler: GetCart.lambda_handler
+    description: Obtiene los productos del carrito de un usuario específico
+    events:
+      - http:
+          path: /cart
+          method: get
+          cors: true
+          integration: lambda-proxy
+      - http:
+          path: /cart
+          method: options
+          cors: true
+          integration: lambda-proxy
+
   confirm:
     handler: CompletePurchase.lambda_handler
     documentation:

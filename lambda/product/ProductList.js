@@ -34,8 +34,8 @@ exports.handler = async (event) => {
       throw new Error("Falta tenant_id en query");
     }
 
-    const limit = parseInt(event.queryStringParameters?.limit) || 10;
-    const nextToken = event.queryStringParameters?.nextToken;
+    // Validar token
+    await validateTotoken(token, tenant_id);
 
     // Usamos query (con índice por tenant_id) y paginación
     const params = {
