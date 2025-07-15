@@ -56,7 +56,7 @@ def lambda_handler(event, context):
     print('Item:', item)
 
     # Extra check tenant_id
-    if skip_tenant and item.get('tenant_id') != tenant_id:
+    if skip_check and item.get('tenant_id') != tenant_id:
         print('Mismatch tenant_id:', item.get('tenant_id'))
         return {
             'statusCode': 403,
