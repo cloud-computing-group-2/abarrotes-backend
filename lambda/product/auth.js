@@ -3,13 +3,13 @@ const lambda = new AWS.Lambda();
 
 const ENV = process.env.STAGE || 'dev';
 
-async function validateToken(token, tenant_id) {
+async function validateToken(token, tenant_id, skip_tenant = false) {
   if (!token || !tenant_id) {
     throw new Error('Token inválido o expirado');
   }
 
   const payload = {
-    body: JSON.stringify({ token, tenant_id })
+    body: JSON.stringify({ token, tenant_id, skip_tenant })
   };
 
   const params = {

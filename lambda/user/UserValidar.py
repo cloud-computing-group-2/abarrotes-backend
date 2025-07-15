@@ -23,6 +23,7 @@ def lambda_handler(event, context):
 
     token = body.get('token')
     tenant_id = body.get('tenant_id')
+    skip_check = body.get('skip_tenant_check', False)
 
     if not token or not tenant_id:
         return {
@@ -55,7 +56,7 @@ def lambda_handler(event, context):
     print('Item:', item)
 
     # Extra check tenant_id
-    if item.get('tenant_id') != tenant_id:
+    if skip_tenant and item.get('tenant_id') != tenant_id:
         print('Mismatch tenant_id:', item.get('tenant_id'))
         return {
             'statusCode': 403,
