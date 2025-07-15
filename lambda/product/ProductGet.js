@@ -24,9 +24,6 @@ exports.handler = async (event) => {
     console.log(typeof(tenant_id))
     console.log(typeof(producto_id))
 
-    // Validar token
-    await validateToken(token, tenant_id);
-
     // Obtener el producto
     const params = {
       TableName: tableName,
