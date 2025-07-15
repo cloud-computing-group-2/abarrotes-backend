@@ -34,9 +34,6 @@ exports.handler = async (event) => {
       throw new Error("Falta tenant_id en query");
     }
 
-    // Validar token (lanza error si no coincide con tenant_id)
-    await validateToken(token, tenant_id, true);
-
     const limit = parseInt(event.queryStringParameters?.limit) || 10;
     const nextToken = event.queryStringParameters?.nextToken;
 
