@@ -35,7 +35,7 @@ exports.handler = async (event) => {
     }
 
     // Validar token
-    await validateTotoken(token, tenant_id);
+    await validateToken(token, tenant_id);
 
     // Usamos query (con índice por tenant_id) y paginación
     const params = {
