@@ -11,7 +11,7 @@ const CORS_HEADERS = {
 
 exports.handler = async (event) => {
   try {
-    // Responder preflight CORS
+    // Preflight CORS
     if (event.httpMethod === 'OPTIONS') {
       return {
         statusCode: 200,
@@ -21,7 +21,7 @@ exports.handler = async (event) => {
     }
 
     const tableName = process.env.TABLE_PRODUCTOS;
-    if (!tableName) throw new Error("Variable TABLE_PRODUCTOS no definida");
+    if (!tableName) throw new Error("Variable de entorno TABLE_PRODUCTOS no definida");
 
     const rawAuth = event.headers?.Authorization || event.headers?.authorization;
     if (!rawAuth || !rawAuth.startsWith("Bearer ")) {
@@ -31,23 +31,34 @@ exports.handler = async (event) => {
 
     const tenant_id = event.queryStringParameters?.tenant_id;
     if (!tenant_id) {
-      throw new Error("Falta tenant_id en query");
+      throw new Error("Falta 'tenant_id' en los parámetros de la query");
     }
 
-    const limit = parseInt(event.queryStringParameters?.limit) || 10;
+    // Validar token
+    await validateToken(token, tenant_id);
+
+    // Leer y validar paginación
+    const limit = parseInt(event.queryStringParameters?.limit, 10) || 10;
+    if (limit <= 0 || isNaN(limit)) throw new Error("El parámetro 'limit' debe ser un número positivo");
+
     const nextToken = event.queryStringParameters?.nextToken;
 
-    // Usamos query (con índice por tenant_id) y paginación
+    // Consulta paginada por tenant_id
     const params = {
       TableName: tableName,
       KeyConditionExpression: 'tenant_id = :tid',
       ExpressionAttributeValues: { ':tid': tenant_id },
       Limit: limit,
     };
+
     if (nextToken) {
-      params.ExclusiveStartKey = JSON.parse(
-        Buffer.from(nextToken, 'base64').toString('utf8')
-      );
+      try {
+        params.ExclusiveStartKey = JSON.parse(
+          Buffer.from(nextToken, 'base64').toString('utf8')
+        );
+      } catch (e) {
+        throw new Error("Token de paginación inválido");
+      }
     }
 
     const result = await dynamo.query(params).promise();
