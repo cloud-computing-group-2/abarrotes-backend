@@ -11,7 +11,7 @@ provider:
   timeout: 30
   region: us-east-1
   iam:
-    role: arn:aws:iam::250853414258:role/LabRole
+    role: arn:aws:iam::664631149389:role/LabRole
   environment:
     TABLE_AUTH: ${self:custom.tableAuth}
     TABLE_USER: ${self:custom.tableUser}
