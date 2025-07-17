@@ -61,7 +61,16 @@ def lambda_handler(event, context):
         }
     )
 
+    if 'Item' not in response:
+        return cors_response(200, {
+            'message': 'Carrito vacío.',
+            'products': [],
+            'total_price': '0.0'
+        })
+
     # buscando el producto en el carrito
+
+    print(response)
 
     products = response['Item'].get('products', [])
     total_price = response['Item'].get('total_price', Decimal('0.0'))

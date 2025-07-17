@@ -110,7 +110,8 @@ def lambda_handler(event, context):
             'product_id': product_id, 
             'nombre': nombre,
             'amount': amount,          
-            'price': new_price  # precio del prod * cantidad
+            'price': new_price,  # precio del prod * cantidad
+            'stock': new_stock
         }
     # no verifica i el producto ya está en el carrito del usuario eso se hará en PUT
     if 'Item' in response: # existe
