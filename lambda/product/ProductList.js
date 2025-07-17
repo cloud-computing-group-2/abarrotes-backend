@@ -34,9 +34,6 @@ exports.handler = async (event) => {
       throw new Error("Falta 'tenant_id' en los parámetros de la query");
     }
 
-    // Validar token
-    await validateToken(token, tenant_id);
-
     // Leer y validar paginación
     const limit = parseInt(event.queryStringParameters?.limit, 10) || 10;
     if (limit <= 0 || isNaN(limit)) throw new Error("El parámetro 'limit' debe ser un número positivo");

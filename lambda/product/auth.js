@@ -1,38 +1,48 @@
 const AWS = require('aws-sdk');
-const lambda = new AWS.Lambda();
+const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-const ENV = process.env.STAGE || 'dev';
+const TABLE_AUTH = process.env.TABLE_AUTH;
+const TABLE_USER = process.env.TABLE_USER;
 
+/**
+ * Verifica si el token es válido y no está expirado.
+ */
 async function validateToken(token, tenant_id, skip_tenant_check = false) {
   if (!token || !tenant_id) {
-    throw new Error('Token inválido o expirado');
+    throw new Error('Token inválido o tenant_id faltante');
   }
 
-  const payload = {
-    body: JSON.stringify({ token, tenant_id, skip_tenant_check })
-  };
-
-  const params = {
-    FunctionName: `abarrotes-usuarios-${ENV}-validar`,
-    InvocationType: "RequestResponse",
-    Payload: JSON.stringify(payload)
-  };
-
-  try {
-    const res = await lambda.invoke(params).promise();
-    const result = JSON.parse(res.Payload);
-
-    if (result.statusCode !== 200) {
-      throw new Error('Token inválido o expirado');
+  const res = await dynamodb.get({
+    TableName: TABLE_AUTH,
+    Key: {
+      token,
+      tenant_id
     }
+  }).promise();
 
-    return true;
-  } catch (err) {
-    console.error("validateToken error:", err);
-    throw new Error('Error al validar token');
+  const item = res.Item;
+
+  if (!item) {
+    throw new Error('Token no existe');
   }
+
+  if (!skip_tenant_check && item.tenant_id !== tenant_id) {
+    throw new Error('Token no corresponde al tenant');
+  }
+
+  const now = new Date().toISOString();
+  const expires = item.expires_at;
+
+  if (now > expires) {
+    throw new Error('Token expirado');
+  }
+
+  return true;
 }
 
+/**
+ * Verifica si el token es válido y si el usuario tiene rol ADMIN.
+ */
 async function validateAdmin(token, tenant_id) {
   if (!token || !tenant_id) {
     return {
@@ -42,46 +52,74 @@ async function validateAdmin(token, tenant_id) {
     };
   }
 
-  const payload = {
-    body: JSON.stringify({ token, tenant_id })
-  };
-
-  const params = {
-    FunctionName: `abarrotes-usuarios-${ENV}-admin`,
-    InvocationType: "RequestResponse",
-    Payload: JSON.stringify(payload)
-  };
-
-  try {
-    const res = await lambda.invoke(params).promise();
-    const result = JSON.parse(res.Payload);
-
-    // Parsear el body de la respuesta
-    let message;
-    try {
-      const parsed = JSON.parse(result.body);
-      message = typeof parsed === 'string' ? parsed : parsed.error || parsed.message;
-    } catch (e) {
-      message = result.body; // body sin parsear
+  // Paso 1: verificar token
+  const authRes = await dynamodb.get({
+    TableName: TABLE_AUTH,
+    Key: {
+      token,
+      tenant_id
     }
+  }).promise();
 
-    if (result.statusCode !== 200) {
-      return {
-        success: false,
-        statusCode: result.statusCode,
-        error: message || 'Acceso restringido'
-      };
-    }
-
+  const item = authRes.Item;
+  if (!item) {
     return {
-      success: true,
-      user_id: message?.user_id, // por si el mensaje incluye esto
-      rol: message?.rol
+      success: false,
+      statusCode: 403,
+      error: 'Token no existe'
     };
-  } catch (err) {
-    console.error("validateAdmin error:", err);
-    throw new Error("Accesso restringido") // fuck handling errors
   }
+
+  const now = new Date().toISOString();
+  if (now > item.expires_at) {
+    return {
+      success: false,
+      statusCode: 403,
+      error: 'Token expirado'
+    };
+  }
+
+  if (item.tenant_id !== tenant_id) {
+    return {
+      success: false,
+      statusCode: 403,
+      error: 'Token no corresponde al tenant'
+    };
+  }
+
+  const user_id = item.user_id;
+
+  // Paso 2: verificar rol del usuario
+  const userRes = await dynamodb.get({
+    TableName: TABLE_USER,
+    Key: {
+      tenant_id,
+      user_id
+    }
+  }).promise();
+
+  if (!userRes.Item) {
+    return {
+      success: false,
+      statusCode: 403,
+      error: 'Usuario no encontrado'
+    };
+  }
+
+  const rol = userRes.Item.rol;
+  if (rol !== 'ADMIN') {
+    return {
+      success: false,
+      statusCode: 403,
+      error: 'Acceso restringido a administradores'
+    };
+  }
+
+  return {
+    success: true,
+    user_id,
+    rol
+  };
 }
 
 module.exports = {
