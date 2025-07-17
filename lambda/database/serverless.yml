@@ -13,7 +13,7 @@ provider:
   timeout: 30
   stage: ${self:custom.stage}
   iam:
-    role: arn:aws:iam::250853414258:role/LabRole
+    role: arn:aws:iam::664631149389:role/LabRole
   environment:
     STAGE: ${self:custom.stage}
 
